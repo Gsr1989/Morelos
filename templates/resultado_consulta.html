@@ -33,20 +33,6 @@
             margin: 10px 0 30px 0;
         }
 
-        .titulo {
-            text-align: center;
-            font-size: 24px;
-            font-weight: bold;
-            color: #222;
-        }
-
-        .subtitulo {
-            text-align: center;
-            font-size: 18px;
-            margin-top: 5px;
-            color: #444;
-        }
-
         .estado {
             text-align: center;
             font-size: 22px;
@@ -74,18 +60,29 @@
         }
 
         .certificado {
-            border: 2px solid #ccc;
+            background-color: #e5e9e2; /* verde clarito tipo imagen */
             padding: 20px;
             border-radius: 12px;
             width: 90%;
             max-width: 600px;
             margin: 30px auto;
-            background-color: #f2f2f2;
         }
 
         .dato {
-            margin: 8px 0;
+            margin-bottom: 16px;
             font-size: 16px;
+        }
+
+        .dato strong {
+            display: block;
+            font-weight: bold;
+            color: #3e4d3d;
+        }
+
+        .dato span {
+            display: block;
+            margin-top: 4px;
+            color: #2e3d2d;
         }
 
         .valido {
@@ -128,9 +125,6 @@
         }
 
         @media (max-width: 600px) {
-            .titulo {
-                font-size: 20px;
-            }
             .estado {
                 font-size: 20px;
             }
@@ -147,16 +141,13 @@
         <img src="{{ url_for('static', filename='logo1.jpg') }}" alt="Encabezado">
     </div>
 
-    <!-- Imagen secundaria debajo de la principal -->
+    <!-- Imagen secundaria -->
     <div class="banner">
         <img src="{{ url_for('static', filename='encabezado2.jpg') }}" alt="Encabezado 2">
     </div>
 
     <!-- Texto institucional -->
     <div class="texto-morelos">Permiso Digital Morelos</div>
-
-    <div class="titulo">Secretaría de Movilidad</div>
-    <div class="subtitulo">Ciudad de México</div>
 
     {% if resultado.estado == "No encontrado" %}
         <div class="estado no-encontrado">
@@ -174,13 +165,34 @@
 
     {% if resultado.estado != "No encontrado" %}
     <div class="certificado">
-        <div class="dato"><strong>Fecha de Expedición:</strong> {{ resultado.fecha_expedicion }}</div>
-        <div class="dato"><strong>Fecha de Vencimiento:</strong> {{ resultado.fecha_vencimiento }}</div>
-        <div class="dato"><strong>Marca:</strong> {{ resultado.marca }}</div>
-        <div class="dato"><strong>Línea:</strong> {{ resultado.linea }}</div>
-        <div class="dato"><strong>Año:</strong> {{ resultado.año }}</div>
-        <div class="dato"><strong>Número de Serie:</strong> {{ resultado.numero_serie }}</div>
-        <div class="dato"><strong>Número de Motor:</strong> {{ resultado.numero_motor }}</div>
+        <div class="dato">
+            <strong>Fecha de Expedición:</strong>
+            <span>{{ resultado.fecha_expedicion }}</span>
+        </div>
+        <div class="dato">
+            <strong>Fecha de Vencimiento:</strong>
+            <span>{{ resultado.fecha_vencimiento }}</span>
+        </div>
+        <div class="dato">
+            <strong>Marca:</strong>
+            <span>{{ resultado.marca }}</span>
+        </div>
+        <div class="dato">
+            <strong>Línea:</strong>
+            <span>{{ resultado.linea }}</span>
+        </div>
+        <div class="dato">
+            <strong>Año:</strong>
+            <span>{{ resultado.año }}</span>
+        </div>
+        <div class="dato">
+            <strong>Número de Serie:</strong>
+            <span>{{ resultado.numero_serie }}</span>
+        </div>
+        <div class="dato">
+            <strong>Número de Motor:</strong>
+            <span>{{ resultado.numero_motor }}</span>
+        </div>
     </div>
     {% endif %}
 
