@@ -15,7 +15,6 @@
         .banner {
             width: 100%;
             text-align: center;
-            margin-bottom: 20px;
         }
 
         .banner img {
@@ -23,6 +22,15 @@
             max-width: 100%;
             height: auto;
             display: block;
+        }
+
+        .texto-morelos {
+            text-align: center;
+            color: #a88b58;
+            font-size: 26px;
+            font-weight: bold;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 10px 0 30px 0;
         }
 
         .titulo {
@@ -96,7 +104,7 @@
         }
 
         .btn-regresar a {
-            background-color: #2f4f2f; /* verde oscuro institucional */
+            background-color: #2f4f2f;
             color: white;
             text-decoration: none;
             padding: 12px 20px;
@@ -126,15 +134,26 @@
             .estado {
                 font-size: 20px;
             }
+            .texto-morelos {
+                font-size: 22px;
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- Imagen superior como encabezado -->
+    <!-- Imagen principal -->
     <div class="banner">
         <img src="{{ url_for('static', filename='logo1.jpg') }}" alt="Encabezado">
     </div>
+
+    <!-- Imagen secundaria debajo de la principal -->
+    <div class="banner">
+        <img src="{{ url_for('static', filename='encabezado2.jpg') }}" alt="Encabezado 2">
+    </div>
+
+    <!-- Texto institucional -->
+    <div class="texto-morelos">Permiso Digital Morelos</div>
 
     <div class="titulo">Secretaría de Movilidad</div>
     <div class="subtitulo">Ciudad de México</div>
