@@ -60,7 +60,7 @@
         }
 
         .certificado {
-            background-color: #e5e9e2; /* verde clarito tipo imagen */
+            background-color: #e5e9e2;
             padding: 20px;
             border-radius: 12px;
             width: 90%;
@@ -115,12 +115,15 @@
         }
 
         footer {
-            margin-top: 40px;
             width: 100%;
+            margin-top: 40px;
+            text-align: center;
         }
 
         footer img {
             width: 100%;
+            max-width: 100%;
+            height: auto;
             display: block;
         }
 
@@ -202,8 +205,9 @@
         <a href="{{ url_for('consulta_folio') }}">Regresar</a>
     </div>
 
+    <!-- Nuevo pie de página alineado -->
     <footer>
-        <img src="{{ url_for('static', filename='footer.png') }}" alt="Footer">
+        <img src="{{ url_for('static', filename='piedepaguinamorelos.jpg') }}" alt="Pie de página">
     </footer>
 
 </body>
