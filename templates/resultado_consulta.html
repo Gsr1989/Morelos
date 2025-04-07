@@ -12,21 +12,22 @@
             padding: 0;
         }
 
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 30px;
+        .banner {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 20px;
         }
 
-        header img {
-            height: 80px;
+        .banner img {
+            width: 100%;
+            max-width: 100%;
+            height: auto;
+            display: block;
         }
 
         .titulo {
             text-align: center;
             font-size: 24px;
-            margin-top: 20px;
             font-weight: bold;
             color: #222;
         }
@@ -95,7 +96,7 @@
         }
 
         .btn-regresar a {
-            background-color: #800000;
+            background-color: #2f4f2f; /* verde oscuro institucional */
             color: white;
             text-decoration: none;
             padding: 12px 20px;
@@ -105,7 +106,7 @@
         }
 
         .btn-regresar a:hover {
-            background-color: #a00000;
+            background-color: #3e7142;
         }
 
         footer {
@@ -119,9 +120,6 @@
         }
 
         @media (max-width: 600px) {
-            header img {
-                height: 60px;
-            }
             .titulo {
                 font-size: 20px;
             }
@@ -133,14 +131,9 @@
 </head>
 <body>
 
-    <header>
-        <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo">
-        <img src="{{ url_for('static', filename='sub_logo.png') }}" alt="Sub Logo">
-    </header>
-
-    <!-- Banner centrado a lo ancho -->
-    <div style="width: 100%; text-align: center; margin: 20px 0;">
-        <img src="{{ url_for('static', filename='logo1.jpg') }}" alt="Logo Central" style="width: 100%; max-width: 100%; height: auto; display: block;">
+    <!-- Imagen superior como encabezado -->
+    <div class="banner">
+        <img src="{{ url_for('static', filename='logo1.jpg') }}" alt="Encabezado">
     </div>
 
     <div class="titulo">Secretaría de Movilidad</div>
