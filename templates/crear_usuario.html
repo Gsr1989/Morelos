@@ -11,22 +11,28 @@
             margin: 0;
             padding: 0;
         }
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 30px;
-        }
-        header img {
-            height: 80px;
-        }
-        .titulo {
+
+        .banner {
+            width: 100%;
             text-align: center;
-            font-size: 28px;
-            margin-top: 30px;
-            font-weight: bold;
-            color: #222;
         }
+
+        .banner img {
+            width: 100%;
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .texto-morelos {
+            text-align: center;
+            color: #a88b58;
+            font-size: 26px;
+            font-weight: bold;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 10px 0 30px 0;
+        }
+
         .formulario {
             max-width: 600px;
             margin: 30px auto;
@@ -34,6 +40,7 @@
             border-radius: 10px;
             background-color: #f9f9f9;
         }
+
         input {
             width: 100%;
             padding: 12px;
@@ -42,8 +49,9 @@
             border: 1px solid #ccc;
             font-size: 16px;
         }
+
         .btn, .nav-btn {
-            background-color: #800000;
+            background-color: #2f4f2f;
             color: white;
             border: none;
             padding: 14px 22px;
@@ -56,10 +64,13 @@
             text-align: center;
             display: block;
             text-decoration: none;
+            font-weight: bold;
         }
+
         .btn:hover, .nav-btn:hover {
-            background-color: #a00000;
+            background-color: #3e7142;
         }
+
         .mensaje {
             margin: 20px auto;
             max-width: 600px;
@@ -68,66 +79,79 @@
             font-weight: bold;
             border-radius: 5px;
         }
+
         .success {
             background-color: #4CAF50;
             color: white;
         }
+
         .error {
             background-color: #f44336;
             color: white;
         }
+
         footer {
             margin-top: 40px;
             width: 100%;
+            text-align: center;
         }
+
         footer img {
             width: 100%;
+            max-width: 100%;
+            height: auto;
             display: block;
         }
+
         @media (max-width: 600px) {
-            header img {
-                height: 60px;
-            }
-            .titulo {
-                font-size: 24px;
-                margin-top: 20px;
+            .texto-morelos {
+                font-size: 22px;
             }
         }
     </style>
 </head>
 <body>
 
-<header>
-    <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo">
-    <img src="{{ url_for('static', filename='sub_logo.png') }}" alt="Sub Logo">
-</header>
+    <!-- Encabezado institucional -->
+    <div class="banner">
+        <img src="{{ url_for('static', filename='logo1.jpg') }}" alt="Encabezado Principal">
+    </div>
 
-<div class="titulo">Secretaría de Movilidad</div>
+    <div class="banner">
+        <img src="{{ url_for('static', filename='encabezado2.jpg') }}" alt="Encabezado Secundario">
+    </div>
 
-{% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    {% for category, message in messages %}
-      <div class="mensaje {{ category }}">{{ message }}</div>
-    {% endfor %}
-  {% endif %}
-{% endwith %}
+    <!-- Título institucional -->
+    <div class="texto-morelos">Permiso Digital Morelos</div>
 
-<form method="POST" class="formulario">
-    <input type="text" name="username" placeholder="Nombre de usuario" required>
-    <input type="password" name="password" placeholder="Contraseña" required>
-    <input type="number" name="folios" placeholder="Cantidad de folios" required>
-    <button type="submit" class="btn">Crear Usuario</button>
-</form>
+    <!-- Mensajes flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="mensaje {{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
 
-<div class="formulario">
-    <a href="{{ url_for('admin') }}" class="nav-btn">Volver al Panel</a>
-    <a href="{{ url_for('consulta_folio') }}" class="nav-btn">Consultar Folio</a>
-    <a href="{{ url_for('logout') }}" class="nav-btn">Cerrar Sesión</a>
-</div>
+    <!-- Formulario de creación -->
+    <form method="POST" class="formulario">
+        <input type="text" name="username" placeholder="Nombre de usuario" required>
+        <input type="password" name="password" placeholder="Contraseña" required>
+        <input type="number" name="folios" placeholder="Cantidad de folios" required>
+        <button type="submit" class="btn">Crear Usuario</button>
+    </form>
 
-<footer>
-    <img src="{{ url_for('static', filename='footer.png') }}" alt="Footer">
-</footer>
+    <!-- Enlaces de navegación -->
+    <div class="formulario">
+        <a href="{{ url_for('admin') }}" class="nav-btn">Volver al Panel</a>
+        <a href="{{ url_for('consulta_folio') }}" class="nav-btn">Consultar Folio</a>
+        <a href="{{ url_for('logout') }}" class="nav-btn">Cerrar Sesión</a>
+    </div>
+
+    <!-- Pie de página -->
+    <footer>
+        <img src="{{ url_for('static', filename='piedepaguinamorelos.jpg') }}" alt="Pie de página">
+    </footer>
 
 </body>
 </html>
