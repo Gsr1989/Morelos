@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
         body {
-            background-color: #ffffff;
+            background-color: #fff;
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
@@ -26,33 +26,32 @@
             color: #a88b58;
             font-size: 26px;
             font-weight: bold;
+            margin: 10px 0 30px;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 10px 0 30px 0;
         }
         .botones {
             display: flex;
             justify-content: center;
-            gap: 15px;
-            margin: 30px auto;
             flex-wrap: wrap;
+            gap: 15px;
             max-width: 600px;
+            margin: 30px auto;
         }
         .btn {
             background-color: #2f4f2f;
-            color: white;
+            color: #fff;
             border: none;
             padding: 14px 22px;
             font-size: 16px;
             border-radius: 6px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: background-color .3s;
         }
         .btn:hover {
             background-color: #3e7142;
         }
         footer {
             margin-top: 40px;
-            width: 100%;
             text-align: center;
         }
         footer img {
@@ -62,25 +61,17 @@
             display: block;
         }
         @media (max-width: 600px) {
-            .texto-morelos {
-                font-size: 22px;
-            }
-            .botones {
-                flex-direction: column;
-                gap: 10px;
-            }
-            .btn {
-                width: 100%;
-                text-align: center;
-            }
+            .texto-morelos { font-size: 22px; }
+            .botones { flex-direction: column; gap: 10px; }
+            .btn { width: 100%; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Encabezados institucionales -->
+    <!-- Encabezados -->
     <div class="banner">
-        <img src="{{ url_for('static', filename='logo1.jpg') }}" alt="Encabezado Principal">
+        <img src="{{ url_for('static', filename='logo1.jpg') }}" alt="Logo Principal">
     </div>
     <div class="banner">
         <img src="{{ url_for('static', filename='encabezado2.jpg') }}" alt="Encabezado Secundario">
@@ -89,13 +80,32 @@
     <!-- Título -->
     <div class="texto-morelos">Permiso Digital Morelos</div>
 
-    <!-- Botones del panel -->
+    <!-- Botones -->
     <div class="botones">
-        <a href="{{ url_for('registro_admin') }}"><button class="btn">Registrar Folio</button></a>
-        <a href="{{ url_for('admin_folios') }}"><button class="btn">Ver Todos los Folios</button></a>
-        <a href="{{ url_for('consulta_folio') }}"><button class="btn">Consultar Folio</button></a>
-        <a href="{{ url_for('crear_usuario') }}"><button class="btn">Crear Usuario</button></a>
-        <a href="{{ url_for('logout') }}"><button class="btn">Cerrar Sesión</button></a>
+        <!-- Registrar un folio nuevo (plantilla admin) -->
+        <a href="{{ url_for('registro_admin') }}">
+            <button class="btn">Registrar Folio</button>
+        </a>
+
+        <!-- Ver todos los folios creados -->
+        <a href="{{ url_for('admin_folios') }}">
+            <button class="btn">Ver Todos los Folios</button>
+        </a>
+
+        <!-- Consultar estado de un folio -->
+        <a href="{{ url_for('consulta_folio') }}">
+            <button class="btn">Consultar Folio</button>
+        </a>
+
+        <!-- Crear un usuario nuevo -->
+        <a href="{{ url_for('crear_usuario') }}">
+            <button class="btn">Crear Usuario</button>
+        </a>
+
+        <!-- Cerrar sesión -->
+        <a href="{{ url_for('logout') }}">
+            <button class="btn">Cerrar Sesión</button>
+        </a>
     </div>
 
     <!-- Pie de página -->
