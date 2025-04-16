@@ -11,19 +11,16 @@
             margin: 0;
             padding: 0;
         }
-
         .banner {
             width: 100%;
             text-align: center;
         }
-
         .banner img {
             width: 100%;
             max-width: 100%;
             height: auto;
             display: block;
         }
-
         .texto-morelos {
             text-align: center;
             color: #a88b58;
@@ -32,7 +29,6 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 10px 0 30px 0;
         }
-
         .botones {
             display: flex;
             justify-content: center;
@@ -41,7 +37,6 @@
             flex-wrap: wrap;
             max-width: 600px;
         }
-
         .btn {
             background-color: #2f4f2f;
             color: white;
@@ -52,29 +47,28 @@
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
-
         .btn:hover {
             background-color: #3e7142;
         }
-
         footer {
             margin-top: 40px;
             width: 100%;
             text-align: center;
         }
-
         footer img {
             width: 100%;
             max-width: 100%;
             height: auto;
             display: block;
         }
-
         @media (max-width: 600px) {
             .texto-morelos {
                 font-size: 22px;
             }
-
+            .botones {
+                flex-direction: column;
+                gap: 10px;
+            }
             .btn {
                 width: 100%;
                 text-align: center;
@@ -84,21 +78,21 @@
 </head>
 <body>
 
-    <!-- Encabezado institucional -->
+    <!-- Encabezados institucionales -->
     <div class="banner">
         <img src="{{ url_for('static', filename='logo1.jpg') }}" alt="Encabezado Principal">
     </div>
-
     <div class="banner">
         <img src="{{ url_for('static', filename='encabezado2.jpg') }}" alt="Encabezado Secundario">
     </div>
 
-    <!-- Texto institucional -->
+    <!-- Título -->
     <div class="texto-morelos">Permiso Digital Morelos</div>
 
     <!-- Botones del panel -->
     <div class="botones">
         <a href="{{ url_for('registro_admin') }}"><button class="btn">Registrar Folio</button></a>
+        <a href="{{ url_for('admin_folios') }}"><button class="btn">Ver Todos los Folios</button></a>
         <a href="{{ url_for('consulta_folio') }}"><button class="btn">Consultar Folio</button></a>
         <a href="{{ url_for('crear_usuario') }}"><button class="btn">Crear Usuario</button></a>
         <a href="{{ url_for('logout') }}"><button class="btn">Cerrar Sesión</button></a>
