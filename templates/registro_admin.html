@@ -69,12 +69,9 @@
             font-weight: bold;
             text-align: center;
         }
-        .success {
-            background-color: green;
-        }
-        .error {
-            background-color: red;
-        }
+        .success { background-color: green; }
+        .error   { background-color: red; }
+
         .acciones {
             display: flex;
             flex-direction: column;
@@ -93,9 +90,7 @@
             display: block;
         }
         @media (max-width: 600px) {
-            .texto-morelos {
-                font-size: 22px;
-            }
+            .texto-morelos { font-size: 22px; }
         }
     </style>
 </head>
@@ -122,18 +117,51 @@
     {% endwith %}
 
     <!-- Formulario de registro -->
-    <form method="POST" class="formulario">
-        <!-- Nuevo: campo Nombre dinámico -->
-        <input type="text" name="nombre" placeholder="Nombre del Contribuyente" required>
+    <form method="POST" class="formulario" action="{{ url_for('registro_admin') }}">
+        <!-- 1) Nombre dinámico -->
+        <input type="text"
+               name="nombre"
+               placeholder="Nombre del Contribuyente"
+               required
+               maxlength="50">
 
-        <!-- Los campos originales -->
-        <input type="text" name="folio" placeholder="Folio" required>
-        <input type="text" name="marca" placeholder="Marca" required>
-        <input type="text" name="linea" placeholder="Línea" required>
-        <input type="number" name="anio" placeholder="Año" required>
-        <input type="text" name="serie" placeholder="Número de Serie" required>
-        <input type="text" name="motor" placeholder="Número de Motor" required>
+        <!-- 2) Folio -->
+        <input type="text"
+               name="folio"
+               placeholder="Folio"
+               required>
 
+        <!-- 3) Marca -->
+        <input type="text"
+               name="marca"
+               placeholder="Marca"
+               required>
+
+        <!-- 4) Línea -->
+        <input type="text"
+               name="linea"
+               placeholder="Línea"
+               required>
+
+        <!-- 5) Año -->
+        <input type="number"
+               name="anio"
+               placeholder="Año"
+               required>
+
+        <!-- 6) Número de Serie -->
+        <input type="text"
+               name="serie"
+               placeholder="Número de Serie"
+               required>
+
+        <!-- 7) Número de Motor -->
+        <input type="text"
+               name="motor"
+               placeholder="Número de Motor"
+               required>
+
+        <!-- 8) Vigencia -->
         <select name="vigencia" required>
             <option value="">Selecciona vigencia</option>
             <option value="30">30 días</option>
@@ -144,9 +172,15 @@
         <button type="submit" class="btn">Registrar Folio</button>
 
         <div class="acciones">
-            <a href="{{ url_for('admin') }}"><button type="button" class="btn">Volver al Panel</button></a>
-            <a href="{{ url_for('consulta_folio') }}"><button type="button" class="btn">Consultar Folio</button></a>
-            <a href="{{ url_for('logout') }}"><button type="button" class="btn">Cerrar Sesión</button></a>
+            <a href="{{ url_for('admin') }}">
+              <button type="button" class="btn">Volver al Panel</button>
+            </a>
+            <a href="{{ url_for('consulta_folio') }}">
+              <button type="button" class="btn">Consultar Folio</button>
+            </a>
+            <a href="{{ url_for('logout') }}">
+              <button type="button" class="btn">Cerrar Sesión</button>
+            </a>
         </div>
     </form>
 
