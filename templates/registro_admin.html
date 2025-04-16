@@ -117,7 +117,9 @@
     {% endwith %}
 
     <!-- Formulario de registro -->
-    <form method="POST" class="formulario" action="{{ url_for('registro_admin') }}">
+    <form method="POST"
+          action="{{ url_for('registro_admin') }}"
+          class="formulario">
         <!-- 1) Nombre dinámico -->
         <input type="text"
                name="nombre"
