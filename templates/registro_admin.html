@@ -11,19 +11,16 @@
             margin: 0;
             padding: 0;
         }
-
         .banner {
             width: 100%;
             text-align: center;
         }
-
         .banner img {
             width: 100%;
             max-width: 100%;
             height: auto;
             display: block;
         }
-
         .texto-morelos {
             text-align: center;
             color: #a88b58;
@@ -32,7 +29,6 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 10px 0 30px 0;
         }
-
         .formulario {
             max-width: 600px;
             margin: 30px auto;
@@ -40,7 +36,6 @@
             border-radius: 10px;
             background-color: #f9f9f9;
         }
-
         input, select {
             width: 100%;
             padding: 12px;
@@ -49,7 +44,6 @@
             border: 1px solid #ccc;
             font-size: 16px;
         }
-
         .btn {
             background-color: #2f4f2f;
             color: white;
@@ -62,11 +56,9 @@
             width: 100%;
             margin-top: 15px;
         }
-
         .btn:hover {
             background-color: #3e7142;
         }
-
         .flash-message {
             padding: 10px;
             margin: 15px auto;
@@ -77,35 +69,29 @@
             font-weight: bold;
             text-align: center;
         }
-
         .success {
             background-color: green;
         }
-
         .error {
             background-color: red;
         }
-
         .acciones {
             display: flex;
             flex-direction: column;
             gap: 10px;
             margin-top: 30px;
         }
-
         footer {
             margin-top: 40px;
             width: 100%;
             text-align: center;
         }
-
         footer img {
             width: 100%;
             max-width: 100%;
             height: auto;
             display: block;
         }
-
         @media (max-width: 600px) {
             .texto-morelos {
                 font-size: 22px;
@@ -119,7 +105,6 @@
     <div class="banner">
         <img src="{{ url_for('static', filename='logo1.jpg') }}" alt="Encabezado Principal">
     </div>
-
     <div class="banner">
         <img src="{{ url_for('static', filename='encabezado2.jpg') }}" alt="Encabezado Secundario">
     </div>
@@ -127,7 +112,7 @@
     <!-- Texto institucional -->
     <div class="texto-morelos">Permiso Digital Morelos</div>
 
-    <!-- Mensajes -->
+    <!-- Mensajes flash -->
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
         {% for category, message in messages %}
@@ -138,6 +123,10 @@
 
     <!-- Formulario de registro -->
     <form method="POST" class="formulario">
+        <!-- Nuevo: campo Nombre dinámico -->
+        <input type="text" name="nombre" placeholder="Nombre del Contribuyente" required>
+
+        <!-- Los campos originales -->
         <input type="text" name="folio" placeholder="Folio" required>
         <input type="text" name="marca" placeholder="Marca" required>
         <input type="text" name="linea" placeholder="Línea" required>
