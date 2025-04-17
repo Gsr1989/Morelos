@@ -6,69 +6,31 @@
   <title>Registro Exitoso</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    body {
-      background-color: #ffffff;
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      text-align: center;
-    }
-
-    /* Encabezado y pie */
-    header img,
-    .franja-abajo img,
-    footer img {
-      width: 100%;
-      display: block;
-    }
-
+    body { background:#fff; font-family:Arial,sans-serif; margin:0; padding:0; text-align:center; }
+    header img, .franja-abajo img, footer img { width:100%; display:block; }
     .contenido {
-      margin: 40px auto;
-      padding: 20px;
-      max-width: 600px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      background: #f9f9f9;
+      margin:40px auto; padding:20px; max-width:600px;
+      border:1px solid #ccc; border-radius:8px; background:#f9f9f9;
     }
-
-    h1 {
-      color: #004d00;
-      margin-bottom: 15px;
-    }
-
-    .contenido p {
-      font-size: 16px;
-      margin: 8px 0;
-      color: #333;
-    }
-
-    /* Botones verdes */
+    h1 { color:#004d00; margin-bottom:15px; }
+    .contenido p { font-size:16px; margin:8px 0; color:#333; }
     .btn-verde {
-      display: inline-block;
-      padding: 12px 24px;
-      margin: 15px 10px 0;
-      background-color: #28a745;
-      color: #fff;
-      text-decoration: none;
-      border-radius: 6px;
-      font-size: 16px;
-      transition: background-color 0.3s ease;
+      display:inline-block; padding:12px 24px; margin:15px 10px 0;
+      background:#28a745; color:#fff; text-decoration:none; border-radius:6px;
+      font-size:16px; transition:background-color .3s;
     }
-    .btn-verde:hover {
-      background-color: #218838;
-    }
-
+    .btn-verde:hover { background:#218838; }
     @media(max-width:600px){
-      .contenido { padding: 15px; }
-      .btn-verde { width: 80%; margin-top: 12px; }
+      .contenido { padding:15px; }
+      .btn-verde { width:80%; margin-top:12px; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Banner superior Morelos -->
+  <!-- Banner Morelos arriba -->
   <header>
-    <img src="{{ url_for('static', filename='morelos_arriba.jpg') }}" alt="Encabezado Morelos">
+    <img src="{{ url_for('static', filename='morelos_arriba.jpg') }}" alt="Encabezado">
   </header>
 
   <div class="contenido">
@@ -77,18 +39,18 @@
     <p><strong>Número de Serie:</strong> {{ serie }}</p>
     <p><strong>Fecha de Generación:</strong> {{ fecha_generacion }}</p>
 
-    <a href="{{ url_for('descargar_pdf', folio=folio) }}" class="btn-verde">Descargar PDF</a>
-    <a href="{{ url_for('admin') }}" class="btn-verde">Volver al Panel</a>
+    <a href="{{ enlace_pdf }}" class="btn-verde">Descargar PDF</a>
+    <a href="{{ volver_url }}" class="btn-verde">Registrar otro folio</a>
   </div>
 
-  <!-- Franja inferior Morelos -->
+  <!-- Franja Morelos abajo -->
   <div class="franja-abajo">
-    <img src="{{ url_for('static', filename='morelos_abajo.jpg') }}" alt="Franja inferior Morelos">
+    <img src="{{ url_for('static', filename='morelos_abajo.jpg') }}" alt="Franja">
   </div>
 
-  <!-- Pie de página Morelos -->
+  <!-- Pie -->
   <footer>
-    <img src="{{ url_for('static', filename='footer_morelos.jpg') }}" alt="Pie de página Morelos">
+    <img src="{{ url_for('static', filename='footer_morelos.jpg') }}" alt="Pie">
   </footer>
 
 </body>
