@@ -1,3 +1,4 @@
+<!-- templates/exitoso.html -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -12,37 +13,83 @@
       padding: 0;
       text-align: center;
     }
+
+    /* Encabezado y pie */
+    header img,
+    .franja-abajo img,
+    footer img {
+      width: 100%;
+      display: block;
+    }
+
     .contenido {
       margin: 40px auto;
       padding: 20px;
       max-width: 600px;
       border: 1px solid #ccc;
       border-radius: 8px;
+      background: #f9f9f9;
     }
-    .btn {
+
+    h1 {
+      color: #004d00;
+      margin-bottom: 15px;
+    }
+
+    .contenido p {
+      font-size: 16px;
+      margin: 8px 0;
+      color: #333;
+    }
+
+    /* Botones verdes */
+    .btn-verde {
       display: inline-block;
-      padding: 10px 20px;
-      margin-top: 20px;
-      background-color: #800000;
+      padding: 12px 24px;
+      margin: 15px 10px 0;
+      background-color: #28a745;
       color: #fff;
       text-decoration: none;
-      border-radius: 5px;
+      border-radius: 6px;
+      font-size: 16px;
       transition: background-color 0.3s ease;
     }
-    .btn:hover {
-      background-color: #a00000;
+    .btn-verde:hover {
+      background-color: #218838;
+    }
+
+    @media(max-width:600px){
+      .contenido { padding: 15px; }
+      .btn-verde { width: 80%; margin-top: 12px; }
     }
   </style>
 </head>
 <body>
+
+  <!-- Banner superior Morelos -->
+  <header>
+    <img src="{{ url_for('static', filename='morelos_arriba.jpg') }}" alt="Encabezado Morelos">
+  </header>
+
   <div class="contenido">
     <h1>Registro Exitoso</h1>
-    <p>Folio: {{ folio }}</p>
-    <p>Número de Serie: {{ serie }}</p>
-    <p>Fecha de Generación: {{ fecha_generacion }}</p>
-    <a href="{{ url_for('descargar_pdf', folio=folio) }}" class="btn">Descargar PDF</a>
-    <br>
-    <a href="{{ url_for('admin') }}" class="btn">Volver al Panel</a>
+    <p><strong>Folio:</strong> {{ folio }}</p>
+    <p><strong>Número de Serie:</strong> {{ serie }}</p>
+    <p><strong>Fecha de Generación:</strong> {{ fecha_generacion }}</p>
+
+    <a href="{{ url_for('descargar_pdf', folio=folio) }}" class="btn-verde">Descargar PDF</a>
+    <a href="{{ url_for('admin') }}" class="btn-verde">Volver al Panel</a>
   </div>
+
+  <!-- Franja inferior Morelos -->
+  <div class="franja-abajo">
+    <img src="{{ url_for('static', filename='morelos_abajo.jpg') }}" alt="Franja inferior Morelos">
+  </div>
+
+  <!-- Pie de página Morelos -->
+  <footer>
+    <img src="{{ url_for('static', filename='footer_morelos.jpg') }}" alt="Pie de página Morelos">
+  </footer>
+
 </body>
 </html>
