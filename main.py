@@ -1,8 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session, send_file
 from datetime import datetime, timedelta
 from supabase import create_client, Client
-import pytz    # Para manejar zona horaria
-import fitz    # PyMuPDF para manipular PDFs
+import pytz
+import fitz
 import os
 
 app = Flask(__name__)
@@ -19,32 +19,21 @@ SUPABASE_KEY = (
 )
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-# Zona horaria de Morelos/CDMX
 TZ_MX = pytz.timezone("America/Mexico_City")
-
 
 @app.route('/')
 def inicio():
     return redirect(url_for('login'))
-
 
 @app.route('/login', methods=['GET','POST'])
 def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        # Admin hardcode
         if username == 'Gsr89roja.' and password == 'serg890105':
             session['admin'] = True
             return redirect(url_for('admin'))
-        # Usuario Supabase
-        resp = (
-            supabase.table("verificaciondigitalcdmx")
-                    .select("*")
-                    .eq("username", username)
-                    .eq("password", password)
-                    .execute()
-        )
+        resp = supabase.table("verificaciondigitalcdmx").select("*").eq("username", username).eq("password", password).execute()
         if resp.data:
             session['user_id'] = resp.data[0]['id']
             session['username'] = resp.data[0]['username']
@@ -52,13 +41,11 @@ def login():
         flash('Credenciales incorrectas', 'error')
     return render_template('login.html')
 
-
 @app.route('/admin')
 def admin():
     if 'admin' not in session:
         return redirect(url_for('login'))
     return render_template('panel.html')
-
 
 @app.route('/crear_usuario', methods=['GET','POST'])
 def crear_usuario():
@@ -68,12 +55,7 @@ def crear_usuario():
         u = request.form['username']
         p = request.form['password']
         fol = int(request.form['folios'])
-        exists = (
-            supabase.table("verificaciondigitalcdmx")
-                    .select("id")
-                    .eq("username", u)
-                    .execute()
-        )
+        exists = supabase.table("verificaciondigitalcdmx").select("id").eq("username", u).execute()
         if exists.data:
             flash('Error: ese usuario ya existe', 'error')
         else:
@@ -86,13 +68,11 @@ def crear_usuario():
             flash('Usuario creado', 'success')
     return render_template('crear_usuario.html')
 
-
 @app.route('/registro_usuario', methods=['GET','POST'])
 def registro_usuario():
     if 'user_id' not in session:
         return redirect(url_for('login'))
     user_id = session['user_id']
-
     if request.method == 'POST':
         folio        = request.form['folio']
         marca        = request.form['marca']
@@ -102,28 +82,18 @@ def registro_usuario():
         numero_motor = request.form['motor']
         vigencia     = int(request.form['vigencia'])
 
-        # 1) Validar duplicado
-        if supabase.table("folios_registrados")\
-           .select("*").eq("folio", folio).execute().data:
+        if supabase.table("folios_registrados").select("*").eq("folio", folio).execute().data:
             flash('Error: folio ya existe', 'error')
             return redirect(url_for('registro_usuario'))
 
-        # 2) Verificar folios disponibles
-        ui = (
-            supabase.table("verificaciondigitalcdmx")
-                    .select("folios_asignac,folios_usados")
-                    .eq("id", user_id)
-                    .execute().data[0]
-        )
+        ui = supabase.table("verificaciondigitalcdmx").select("folios_asignac,folios_usados").eq("id", user_id).execute().data[0]
         if ui['folios_asignac'] - ui['folios_usados'] <= 0:
             flash('No tienes folios disponibles', 'error')
             return redirect(url_for('registro_usuario'))
 
-        # 3) Fechas con zona horaria
         fecha_exp = datetime.now(TZ_MX)
         fecha_ven = fecha_exp + timedelta(days=vigencia)
 
-        # 4) Insert en DB
         supabase.table("folios_registrados").insert({
             "folio": folio,
             "marca": marca,
@@ -135,7 +105,6 @@ def registro_usuario():
             "fecha_vencimiento": fecha_ven.isoformat()
         }).execute()
 
-        # 5) Actualizar contador
         supabase.table("verificaciondigitalcdmx").update({
             "folios_usados": ui['folios_usados'] + 1
         }).eq("id", user_id).execute()
@@ -143,15 +112,8 @@ def registro_usuario():
         flash('Folio registrado correctamente', 'success')
         return redirect(url_for('registro_usuario'))
 
-    # GET: cargar info de folios
-    info = (
-        supabase.table("verificaciondigitalcdmx")
-                .select("folios_asignac,folios_usados")
-                .eq("id", session['user_id'])
-                .execute().data[0]
-    )
+    info = supabase.table("verificaciondigitalcdmx").select("folios_asignac,folios_usados").eq("id", session['user_id']).execute().data[0]
     return render_template('registro_usuario.html', folios_info=info)
-
 
 @app.route('/registro_admin', methods=['GET','POST'])
 def registro_admin():
@@ -168,17 +130,13 @@ def registro_admin():
         vigencia     = int(request.form['vigencia'])
         nombre       = request.form.get('nombre', '')[:50]
 
-        # Validar duplicado
-        if supabase.table("folios_registrados")\
-           .select("*").eq("folio", folio).execute().data:
+        if supabase.table("folios_registrados").select("*").eq("folio", folio).execute().data:
             flash('Error: folio ya existe', 'error')
             return render_template('registro_admin.html')
 
-        # Fechas con zona horaria
         fecha_exp = datetime.now(TZ_MX)
         fecha_ven = fecha_exp + timedelta(days=vigencia)
 
-        # Insert en DB
         supabase.table("folios_registrados").insert({
             "folio": folio,
             "marca": marca,
@@ -190,20 +148,13 @@ def registro_admin():
             "fecha_vencimiento": fecha_ven.isoformat()
         }).execute()
 
-        # Generar PDF
         try:
             doc = fitz.open("morelosvergas1.pdf")
             page = doc[0]
-
-            page.insert_text((155, 245), nombre,
-                             fontsize=18, fontname="helv", color=(0, 0, 0))
-            page.insert_text((1045, 205), folio,
-                             fontsize=20, fontname="helv", color=(0, 0, 0))
-            page.insert_text((1045, 275), fecha_exp.strftime("%d/%m/%Y"),
-                             fontsize=20, fontname="helv", color=(0, 0, 0))
-            page.insert_text((1045, 348), fecha_exp.strftime("%H:%M:%S"),
-                             fontsize=20, fontname="helv", color=(0, 0, 0))
-
+            page.insert_text((155, 245), nombre, fontsize=18, fontname="helv", color=(0, 0, 0))
+            page.insert_text((1045, 205), folio, fontsize=20, fontname="helv", color=(0, 0, 0))
+            page.insert_text((1045, 275), fecha_exp.strftime("%d/%m/%Y"), fontsize=20, fontname="helv", color=(0, 0, 0))
+            page.insert_text((1045, 348), fecha_exp.strftime("%H:%M:%S"), fontsize=20, fontname="helv", color=(0, 0, 0))
             os.makedirs("documentos", exist_ok=True)
             salida = f"documentos/{folio}.pdf"
             doc.save(salida)
@@ -212,28 +163,26 @@ def registro_admin():
             flash(f"Error al generar PDF: {e}", 'error')
             return render_template('registro_admin.html')
 
-        return render_template("exitoso.html",
-                               folio=folio,
-                               enlace_pdf=url_for('descargar_pdf', folio=folio))
+        return render_template("exitoso.html", folio=folio, enlace_pdf=url_for('descargar_pdf', folio=folio))
 
     return render_template('registro_admin.html')
-
 
 @app.route('/consulta_folio', methods=['GET','POST'])
 def consulta_folio():
     resultado = None
     if request.method == 'POST':
         folio = request.form['folio']
-        regs  = supabase.table("folios_registrados").select("*").eq("folio", folio).execute().data
+        regs = supabase.table("folios_registrados").select("*").eq("folio", folio).execute().data
         if not regs:
-            resultado = {"estado": "No encontrado", "folio": folio}
+            resultado = {"estado": "NO SE ENCUENTRA REGISTRADO", "folio": folio}
         else:
-            r    = regs[0]
+            r = regs[0]
             fexp = datetime.fromisoformat(r['fecha_expedicion'])
-            fven = datetime.fromisoformat(r['fecha_vencimiento'])
+            fven = datetime.fromisoformat(r['fecha_vencimiento']).astimezone(TZ_MX)
             ahora = datetime.now(TZ_MX)
+            estado = "VIGENTE" if ahora <= fven else "VENCIDO"
             resultado = {
-                "estado": "VIGENTE" if ahora<=fven else "VENCIDO",
+                "estado": estado,
                 "folio": folio,
                 "fecha_expedicion": fexp.strftime("%d/%m/%Y"),
                 "fecha_vencimiento": fven.strftime("%d/%m/%Y"),
@@ -246,38 +195,36 @@ def consulta_folio():
         return render_template("resultado_consulta.html", resultado=resultado)
     return render_template("consulta_folio.html")
 
-
 @app.route('/admin_folios')
 def admin_folios():
     if 'admin' not in session:
         return redirect(url_for('login'))
-    filtro        = request.args.get('filtro', '').strip()
-    criterio      = request.args.get('criterio', 'folio')
-    ordenar       = request.args.get('ordenar', 'desc')
+
+    filtro = request.args.get('filtro', '').strip()
+    criterio = request.args.get('criterio', 'folio')
+    ordenar = request.args.get('ordenar', 'desc')
     estado_filtro = request.args.get('estado', 'todos')
-    fi            = request.args.get('fecha_inicio', '')
-    ff            = request.args.get('fecha_fin', '')
+    fi = request.args.get('fecha_inicio', '')
+    ff = request.args.get('fecha_fin', '')
 
     q = supabase.table("folios_registrados").select("*")
     if filtro:
-        if criterio == "folio":
-            q = q.ilike("folio", f"%{filtro}%")
-        else:
-            q = q.ilike("numero_serie", f"%{filtro}%")
+        campo = "folio" if criterio == "folio" else "numero_serie"
+        q = q.ilike(campo, f"%{filtro}%")
 
     datos = q.execute().data or []
     ahora = datetime.now(TZ_MX)
-    out   = []
+    out = []
     for f in datos:
         try:
             fe = datetime.fromisoformat(f["fecha_expedicion"])
             fv = datetime.fromisoformat(f["fecha_vencimiento"])
         except:
             continue
-        est = "VIGENTE" if ahora<=fv else "VENCIDO"
+        est = "VIGENTE" if ahora <= fv else "VENCIDO"
         f["estado"] = est
-        if estado_filtro=="vigente" and est!="VIGENTE": continue
-        if estado_filtro=="vencido" and est!="VENCIDO": continue
+        if estado_filtro == "vigente" and est != "VIGENTE": continue
+        if estado_filtro == "vencido" and est != "VENCIDO": continue
         if fi:
             try:
                 if fe < datetime.strptime(fi, "%Y-%m-%d"): continue
@@ -289,15 +236,7 @@ def admin_folios():
         out.append(f)
 
     out.sort(key=lambda x: x["fecha_expedicion"], reverse=(ordenar=="desc"))
-    return render_template("admin_folios.html",
-                           folios=out,
-                           filtro=filtro,
-                           criterio=criterio,
-                           ordenar=ordenar,
-                           estado=estado_filtro,
-                           fecha_inicio=fi,
-                           fecha_fin=ff)
-
+    return render_template("admin_folios.html", folios=out, filtro=filtro, criterio=criterio, ordenar=ordenar, estado=estado_filtro, fecha_inicio=fi, fecha_fin=ff)
 
 @app.route('/editar_folio/<folio>', methods=['GET','POST'])
 def editar_folio(folio):
@@ -314,15 +253,14 @@ def editar_folio(folio):
             "fecha_vencimiento": request.form['fecha_vencimiento']
         }
         supabase.table("folios_registrados").update(data).eq("folio", folio).execute()
-        flash("Folio actualizado correctamente","success")
+        flash("Folio actualizado correctamente", "success")
         return redirect(url_for('admin_folios'))
 
     reg = supabase.table("folios_registrados").select("*").eq("folio", folio).execute().data
     if not reg:
-        flash("Folio no encontrado","error")
+        flash("Folio no encontrado", "error")
         return redirect(url_for('admin_folios'))
     return render_template("editar_folio.html", folio=reg[0])
-
 
 @app.route('/eliminar_folio', methods=['POST'])
 def eliminar_folio():
@@ -330,21 +268,18 @@ def eliminar_folio():
         return redirect(url_for('login'))
     folio = request.form['folio']
     supabase.table("folios_registrados").delete().eq("folio", folio).execute()
-    flash("Folio eliminado correctamente","success")
+    flash("Folio eliminado correctamente", "success")
     return redirect(url_for('admin_folios'))
-
 
 @app.route('/descargar_pdf/<folio>')
 def descargar_pdf(folio):
     path = f"documentos/{folio}.pdf"
     return send_file(path, as_attachment=True, download_name=f"{folio}.pdf")
 
-
 @app.route('/logout')
 def logout():
     session.clear()
     return redirect(url_for('login'))
-
 
 if __name__ == '__main__':
     app.run(debug=True)
