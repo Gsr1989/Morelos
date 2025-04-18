@@ -25,14 +25,15 @@ TZ_MX = pytz.timezone("America/Mexico_City")
 # ----------------------------------------------------------------------
 # Función para generar PDF (plantilla morelosvergas1.pdf)
 # ----------------------------------------------------------------------
-def generar_pdf(folio: str, numero_serie: str) -> str:
+def generar_pdf(folio: str, numero_serie: str, nombre: str) -> str:
     plantilla = "morelosvergas1.pdf"
     doc = fitz.open(plantilla)
     page = doc[0]
 
     ahora = datetime.now(TZ_MX)
-    # Inserta folio, fecha y hora en la plantilla
-    page.insert_text((1045, 205), folio,               fontsize=20, fontname="helv")
+    # Inserta datos en la plantilla
+    page.insert_text((155, 245), nombre,                  fontsize=18, fontname="helv")
+    page.insert_text((1045, 205), folio,                  fontsize=20, fontname="helv")
     page.insert_text((1045, 275), ahora.strftime("%d/%m/%Y"), fontsize=20, fontname="helv")
     page.insert_text((1045, 348), ahora.strftime("%H:%M:%S"), fontsize=20, fontname="helv")
 
@@ -108,6 +109,7 @@ def registro_usuario():
     user_id = session['user_id']
 
     if request.method == 'POST':
+        nombre       = request.form.get('nombre', '').strip()
         folio        = request.form['folio']
         marca        = request.form['marca']
         linea        = request.form['linea']
@@ -134,16 +136,17 @@ def registro_usuario():
         fecha_exp = datetime.now(TZ_MX)
         fecha_ven = fecha_exp + timedelta(days=vigencia)
 
-        # 4) Insert en DB
+        # 4) Insert en DB, incluyendo nombre
         supabase.table("folios_registrados").insert({
-            "folio": folio,
-            "marca": marca,
-            "linea": linea,
-            "anio": anio,
-            "numero_serie": numero_serie,
-            "numero_motor": numero_motor,
-            "fecha_expedicion": fecha_exp.isoformat(),
-            "fecha_vencimiento": fecha_ven.isoformat()
+            "folio":                folio,
+            "marca":                marca,
+            "linea":                linea,
+            "anio":                 anio,
+            "numero_serie":         numero_serie,
+            "numero_motor":         numero_motor,
+            "nombre_contribuyente": nombre,
+            "fecha_expedicion":     fecha_exp.isoformat(),
+            "fecha_vencimiento":    fecha_ven.isoformat()
         }).execute()
 
         # 5) Actualizar contador
@@ -151,18 +154,19 @@ def registro_usuario():
             "folios_usados": ui['folios_usados'] + 1
         }).eq("id", user_id).execute()
 
-        # 6) Generar PDF y mostrar éxito con botón de descarga
-        pdf_path = generar_pdf(folio, numero_serie)
+        # 6) Generar PDF y mostrar éxito
+        pdf_path = generar_pdf(folio, numero_serie, nombre)
         return render_template(
             "exitoso.html",
             folio=folio,
             serie=numero_serie,
+            nombre=nombre,
             fecha_generacion=fecha_exp.strftime("%d/%m/%Y %H:%M:%S"),
             enlace_pdf=url_for('descargar_pdf', folio=folio),
             volver_url=url_for('registro_usuario')
         )
 
-    # GET: info de folios disponibles
+    # GET: carga info de folios disponibles
     info = supabase.table("verificaciondigitalcdmx") \
                   .select("folios_asignac,folios_usados") \
                   .eq("id", user_id).execute().data[0]
@@ -182,7 +186,6 @@ def registro_admin():
         vigencia     = int(request.form['vigencia'])
         nombre       = request.form.get('nombre', '')[:50]
 
-        # Validar duplicado
         if supabase.table("folios_registrados") \
                   .select("*").eq("folio", folio).execute().data:
             flash('Error: folio ya existe', 'error')
@@ -191,7 +194,6 @@ def registro_admin():
         fecha_exp = datetime.now(TZ_MX)
         fecha_ven = fecha_exp + timedelta(days=vigencia)
 
-        # Insert en DB
         supabase.table("folios_registrados").insert({
             "folio": folio,
             "marca": marca,
@@ -203,7 +205,6 @@ def registro_admin():
             "fecha_vencimiento": fecha_ven.isoformat()
         }).execute()
 
-        # Generar PDF con datos de admin
         try:
             doc = fitz.open("morelosvergas1.pdf")
             page = doc[0]
@@ -223,6 +224,7 @@ def registro_admin():
             "exitoso.html",
             folio=folio,
             serie=numero_serie,
+            nombre=nombre,
             fecha_generacion=fecha_exp.strftime("%d/%m/%Y %H:%M:%S"),
             enlace_pdf=url_for('descargar_pdf', folio=folio),
             volver_url=url_for('admin')
