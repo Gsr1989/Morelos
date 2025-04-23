@@ -120,13 +120,10 @@ def registro_usuario():
         motor        = request.form['motor']
         vigencia     = int(request.form['vigencia'])
 
-        # 1) Duplicado?
-        if supabase.table("folios_registrados")\
-                   .select("*").eq("folio", folio).execute().data:
+        if supabase.table("folios_registrados").select("*").eq("folio", folio).execute().data:
             flash('Error: folio ya existe', 'error')
             return redirect(url_for('registro_usuario'))
 
-        # 2) Folios disponibles?
         ui = supabase.table("verificaciondigitalcdmx")\
                      .select("folios_asignac,folios_usados")\
                      .eq("id", uid).execute().data[0]
@@ -134,11 +131,9 @@ def registro_usuario():
             flash('No tienes folios disponibles', 'error')
             return redirect(url_for('registro_usuario'))
 
-        # 3) Fechas con zona horaria
         ahora = datetime.now(TZ_MX)
         venc  = ahora + timedelta(days=vigencia)
 
-        # 4) Insert en DB (sin nombre_contribuyente)
         supabase.table("folios_registrados").insert({
             "folio":            folio,
             "marca":            marca,
@@ -150,12 +145,10 @@ def registro_usuario():
             "fecha_vencimiento":venc.isoformat()
         }).execute()
 
-        # 5) Actualizar contador
         supabase.table("verificaciondigitalcdmx").update({
             "folios_usados": ui['folios_usados'] + 1
         }).eq("id", uid).execute()
 
-        # 6) Generar PDF con nombre y mostrar pantalla éxito
         pdf_path = generar_pdf(folio, serie, nombre)
         return render_template(
             "exitoso.html",
@@ -167,7 +160,6 @@ def registro_usuario():
             volver_url=url_for('registro_usuario')
         )
 
-    # GET: info de folios disponibles
     info = supabase.table("verificaciondigitalcdmx")\
                   .select("folios_asignac,folios_usados")\
                   .eq("id", session['user_id']).execute().data[0]
@@ -188,7 +180,6 @@ def registro_admin():
         vigencia     = int(request.form['vigencia'])
         nombre       = request.form.get('nombre','')[:50]
 
-        # Duplicado?
         if supabase.table("folios_registrados")\
                    .select("*").eq("folio", folio).execute().data:
             flash('Error: folio ya existe', 'error')
@@ -197,7 +188,6 @@ def registro_admin():
         ahora = datetime.now(TZ_MX)
         venc  = ahora + timedelta(days=vigencia)
 
-        # Insert
         supabase.table("folios_registrados").insert({
             "folio":            folio,
             "marca":            marca,
@@ -209,7 +199,6 @@ def registro_admin():
             "fecha_vencimiento":venc.isoformat()
         }).execute()
 
-        # Generar PDF Admin
         try:
             pdf_path = generar_pdf(folio, serie, nombre)
         except Exception as e:
@@ -238,8 +227,7 @@ def consulta_folio():
                         .select("*").eq("folio", folio).execute().data
         if not row:
             resultado = {
-                "estado": "NO SE ENCUENTRA REGISTRADO",
-                "color": "rojo",
+                "estado": "NO ENCONTRADO",
                 "folio": folio
             }
         else:
@@ -250,7 +238,6 @@ def consulta_folio():
             estado = "VIGENTE" if ahora <= fven else "VENCIDO"
             resultado = {
                 "estado": estado,
-                "color":  "verde" if estado == "VIGENTE" else "cafe",
                 "folio":  folio,
                 "fecha_expedicion":  fexp.strftime("%d/%m/%Y"),
                 "fecha_vencimiento": fven.strftime("%d/%m/%Y"),
