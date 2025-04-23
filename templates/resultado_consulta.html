@@ -152,11 +152,13 @@
     <!-- Texto institucional -->
     <div class="texto-morelos">Permiso Digital Morelos</div>
 
-    {% if resultado.estado == "No encontrado" %}
+    {% set estado = resultado.estado|upper|trim %}
+
+    {% if estado == "NO ENCONTRADO" %}
         <div class="estado no-encontrado">
-            FOLIO {{ resultado.folio }} : NO SE ENCUENTRA REGISTRADO
+            FOLIO {{ resultado.folio }} : NO SE ENCUENTRA EN NUESTRO SISTEMA
         </div>
-    {% elif resultado.estado == "VENCIDO" %}
+    {% elif estado == "VENCIDO" %}
         <div class="estado vencido">
             FOLIO {{ resultado.folio }} : VENCIDO
         </div>
@@ -166,7 +168,7 @@
         </div>
     {% endif %}
 
-    {% if resultado.estado != "No encontrado" %}
+    {% if estado != "NO ENCONTRADO" %}
     <div class="certificado">
         <div class="dato">
             <strong>Fecha de Expedición:</strong>
