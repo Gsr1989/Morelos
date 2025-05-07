@@ -1,195 +1,200 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Registro de Folio (Admin)</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-        body {
-            background-color: #ffffff;
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-        .banner {
-            width: 100%;
-            text-align: center;
-        }
-        .banner img {
-            width: 100%;
-            max-width: 100%;
-            height: auto;
-            display: block;
-        }
-        .texto-morelos {
-            text-align: center;
-            color: #a88b58;
-            font-size: 26px;
-            font-weight: bold;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 10px 0 30px 0;
-        }
-        .formulario {
-            max-width: 600px;
-            margin: 30px auto;
-            padding: 20px;
-            border-radius: 10px;
-            background-color: #f9f9f9;
-        }
-        input, select {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-            font-size: 16px;
-        }
-        .btn {
-            background-color: #2f4f2f;
-            color: white;
-            border: none;
-            padding: 14px 22px;
-            font-size: 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            width: 100%;
-            margin-top: 15px;
-        }
-        .btn:hover {
-            background-color: #3e7142;
-        }
-        .flash-message {
-            padding: 10px;
-            margin: 15px auto;
-            width: 90%;
-            max-width: 600px;
-            border-radius: 5px;
-            color: white;
-            font-weight: bold;
-            text-align: center;
-        }
-        .success { background-color: green; }
-        .error   { background-color: red; }
+  <meta charset="UTF-8">
+  <title>Registro de Folio (Admin)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      background-color: #ffffff;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .banner {
+      width: 100%;
+      text-align: center;
+    }
+    .banner img {
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+    .texto-morelos {
+      text-align: center;
+      color: #a88b58;
+      font-size: 26px;
+      font-weight: bold;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 10px 0 30px 0;
+    }
+    .formulario {
+      max-width: 600px;
+      margin: 30px auto;
+      padding: 20px;
+      border-radius: 10px;
+      background-color: #f9f9f9;
+    }
+    input, select {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+      text-transform: uppercase;
+    }
+    .btn {
+      background-color: #2f4f2f;
+      color: white;
+      border: none;
+      padding: 14px 22px;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      width: 100%;
+      margin-top: 15px;
+    }
+    .btn:hover {
+      background-color: #3e7142;
+    }
+    .flash-message {
+      padding: 10px;
+      margin: 15px auto;
+      width: 90%;
+      max-width: 600px;
+      border-radius: 5px;
+      color: white;
+      font-weight: bold;
+      text-align: center;
+    }
+    .success { background-color: green; }
+    .error   { background-color: red; }
 
-        .acciones {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-top: 30px;
-        }
-        footer {
-            margin-top: 40px;
-            width: 100%;
-            text-align: center;
-        }
-        footer img {
-            width: 100%;
-            max-width: 100%;
-            height: auto;
-            display: block;
-        }
-        @media (max-width: 600px) {
-            .texto-morelos { font-size: 22px; }
-        }
-    </style>
+    .acciones {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 30px;
+    }
+
+    .autobox {
+      max-width: 600px;
+      margin: 30px auto;
+      text-align: left;
+    }
+
+    footer {
+      margin-top: 40px;
+      width: 100%;
+      text-align: center;
+    }
+    footer img {
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+  </style>
 </head>
 <body>
 
-    <!-- Encabezado institucional -->
-    <div class="banner">
-        <img src="{{ url_for('static', filename='logo1.jpg') }}" alt="Encabezado Principal">
-    </div>
-    <div class="banner">
-        <img src="{{ url_for('static', filename='encabezado2.jpg') }}" alt="Encabezado Secundario">
-    </div>
+<div class="banner">
+  <img src="{{ url_for('static', filename='logo1.jpg') }}" alt="Encabezado Principal">
+</div>
+<div class="banner">
+  <img src="{{ url_for('static', filename='encabezado2.jpg') }}" alt="Encabezado Secundario">
+</div>
 
-    <!-- Texto institucional -->
-    <div class="texto-morelos">Permiso Digital Morelos</div>
+<div class="texto-morelos">Permiso Digital Morelos</div>
 
-    <!-- Mensajes flash -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        {% for category, message in messages %}
-          <div class="flash-message {{ category }}">{{ message }}</div>
-        {% endfor %}
-      {% endif %}
-    {% endwith %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="flash-message {{ category }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
 
-    <!-- Formulario de registro -->
-    <form method="POST"
-          action="{{ url_for('registro_admin') }}"
-          class="formulario">
-        <!-- 1) Nombre dinámico -->
-        <input type="text"
-               name="nombre"
-               placeholder="Nombre del Contribuyente"
-               required
-               maxlength="50">
+<form method="POST" action="{{ url_for('registro_admin') }}" class="formulario">
+  <input type="text" name="nombre" id="nombre" placeholder="Nombre del Contribuyente" required maxlength="50">
+  <input type="text" name="folio" id="folio" placeholder="Folio" required>
+  <input type="text" name="marca" id="marca" placeholder="Marca" required>
+  <input type="text" name="linea" id="linea" placeholder="Línea" required>
+  <input type="number" name="anio" id="anio" placeholder="Año" required>
+  <input type="text" name="serie" id="serie" placeholder="Número de Serie" required>
+  <input type="text" name="motor" id="motor" placeholder="Número de Motor" required>
+  <select name="vigencia" required>
+    <option value="">Selecciona vigencia</option>
+    <option value="30">30 días</option>
+    <option value="60">60 días</option>
+    <option value="90">90 días</option>
+  </select>
+  <button type="submit" class="btn">Registrar Folio</button>
+  <div class="acciones">
+    <a href="{{ url_for('admin') }}"><button type="button" class="btn">Volver al Panel</button></a>
+    <a href="{{ url_for('consulta_folio') }}"><button type="button" class="btn">Consultar Folio</button></a>
+    <a href="{{ url_for('logout') }}"><button type="button" class="btn">Cerrar Sesión</button></a>
+  </div>
+</form>
 
-        <!-- 2) Folio -->
-        <input type="text"
-               name="folio"
-               placeholder="Folio"
-               required>
+<div class="autobox">
+  <label><input type="checkbox" id="modoAuto" checked> Activar detección automática</label>
+  <textarea id="autotexto" rows="6" placeholder="Pega aquí la descripción completa..."></textarea>
+</div>
 
-        <!-- 3) Marca -->
-        <input type="text"
-               name="marca"
-               placeholder="Marca"
-               required>
+<footer>
+  <img src="{{ url_for('static', filename='piedepaguinamorelos.jpg') }}" alt="Pie de página">
+</footer>
 
-        <!-- 4) Línea -->
-        <input type="text"
-               name="linea"
-               placeholder="Línea"
-               required>
+<script>
+  const campo = document.getElementById("autotexto");
+  const auto = document.getElementById("modoAuto");
 
-        <!-- 5) Año -->
-        <input type="number"
-               name="anio"
-               placeholder="Año"
-               required>
+  campo.addEventListener("input", async () => {
+    if (!auto.checked) return;
 
-        <!-- 6) Número de Serie -->
-        <input type="text"
-               name="serie"
-               placeholder="Número de Serie"
-               required>
+    const texto = campo.value.toUpperCase();
+    const limpiar = txt => txt.replace(/(MARCA|L[ÍI]NEA|SUBMARCA|MODELO|AÑO|FOLIO|N[ÚU]MERO DE SERIE|SERIE|MOTOR|COLOR|NOMBRE DEL SOLICITANTE|NOMBRE|:)/gi, '').trim();
 
-        <!-- 7) Número de Motor -->
-        <input type="text"
-               name="motor"
-               placeholder="Número de Motor"
-               required>
+    const nombre = texto.match(/(NOMBRE|SOLICITANTE)[\s:]+[A-ZÑÁÉÍÓÚ\s]+/);
+    if (nombre) document.getElementById("nombre").value = limpiar(nombre[0]);
 
-        <!-- 8) Vigencia -->
-        <select name="vigencia" required>
-            <option value="">Selecciona vigencia</option>
-            <option value="30">30 días</option>
-            <option value="60">60 días</option>
-            <option value="90">90 días</option>
-        </select>
+    const folio = texto.match(/\b0[0-9]{3,}\b/);
+    if (folio) document.getElementById("folio").value = folio[0];
 
-        <button type="submit" class="btn">Registrar Folio</button>
+    const marca = texto.match(/MARCA\s+[A-Z0-9ÑÁÉÍÓÚ\s]+/);
+    if (marca) document.getElementById("marca").value = limpiar(marca[0]);
 
-        <div class="acciones">
-            <a href="{{ url_for('admin') }}">
-              <button type="button" class="btn">Volver al Panel</button>
-            </a>
-            <a href="{{ url_for('consulta_folio') }}">
-              <button type="button" class="btn">Consultar Folio</button>
-            </a>
-            <a href="{{ url_for('logout') }}">
-              <button type="button" class="btn">Cerrar Sesión</button>
-            </a>
-        </div>
-    </form>
+    const linea = texto.match(/L[ÍI]NEA\s+[A-Z0-9ÑÁÉÍÓÚ\s]+/);
+    if (linea) document.getElementById("linea").value = limpiar(linea[0]);
 
-    <!-- Pie de página -->
-    <footer>
-        <img src="{{ url_for('static', filename='piedepaguinamorelos.jpg') }}" alt="Pie de página">
-    </footer>
+    const año = texto.match(/\b(19[5-9][0-9]|20[0-4][0-9])\b/);
+    if (año) document.getElementById("anio").value = año[0];
+
+    const serie = texto.match(/\b[A-HJ-NPR-Z0-9]{11,17}\b/);
+    if (serie) {
+      document.getElementById("serie").value = serie[0];
+
+      // Consulta a API de VIN gringa
+      try {
+        const res = await fetch(`https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVinValues/${serie[0]}?format=json`);
+        const data = await res.json();
+        const d = data.Results[0];
+        if (!document.getElementById("marca").value && d.Make) document.getElementById("marca").value = d.Make;
+        if (!document.getElementById("linea").value && d.Model) document.getElementById("linea").value = d.Model;
+        if (!document.getElementById("anio").value && d.ModelYear) document.getElementById("anio").value = d.ModelYear;
+      } catch (e) {
+        console.log("Error al consultar la API NHTSA", e);
+      }
+    }
+
+    const motor = texto.match(/(MOTOR|HECHO EN|FABRICADO EN|SIN NÚMERO|NO TIENE|NO CUENTA|S\/N|SN)\s*[A-Z0-9ÑÁÉÍÓÚ\s\-]*/);
+    if (motor) document.getElementById("motor").value = limpiar(motor[0]);
+  });
+</script>
 
 </body>
 </html>
