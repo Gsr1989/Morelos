@@ -21,17 +21,16 @@
       height: auto;
       display: block;
     }
-    .texto-morelos {
+    .titulo {
       text-align: center;
-      color: #a88b58;
       font-size: 26px;
       font-weight: bold;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      margin: 10px 0 30px 0;
+      color: #a88b58;
+      margin: 20px 0 30px;
     }
     .formulario {
       max-width: 600px;
-      margin: 30px auto;
+      margin: 0 auto;
       padding: 20px;
       border-radius: 10px;
       background-color: #f9f9f9;
@@ -53,7 +52,6 @@
       font-size: 16px;
       border-radius: 6px;
       cursor: pointer;
-      transition: background-color 0.3s ease;
       width: 100%;
       margin-top: 15px;
     }
@@ -71,7 +69,7 @@
       text-align: center;
     }
     .success { background-color: green; }
-    .error   { background-color: red; }
+    .error { background-color: red; }
 
     .acciones {
       display: flex;
@@ -108,7 +106,7 @@
   <img src="{{ url_for('static', filename='encabezado2.jpg') }}" alt="Encabezado Secundario">
 </div>
 
-<div class="texto-morelos">Permiso Digital Morelos</div>
+<div class="titulo">Permiso Digital Morelos</div>
 
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
@@ -119,7 +117,7 @@
 {% endwith %}
 
 <form method="POST" action="{{ url_for('registro_admin') }}" class="formulario">
-  <input type="text" name="nombre" id="nombre" placeholder="Nombre del Contribuyente" required maxlength="50">
+  <input type="text" name="nombre" id="nombre" placeholder="Nombre del Contribuyente" required>
   <input type="text" name="folio" id="folio" placeholder="Folio" required>
   <input type="text" name="marca" id="marca" placeholder="Marca" required>
   <input type="text" name="linea" id="linea" placeholder="Línea" required>
@@ -157,12 +155,12 @@
     if (!auto.checked) return;
 
     const texto = campo.value.toUpperCase();
-    const limpiar = txt => txt.replace(/(MARCA|L[ÍI]NEA|SUBMARCA|MODELO|AÑO|FOLIO|N[ÚU]MERO DE SERIE|SERIE|MOTOR|COLOR|NOMBRE DEL SOLICITANTE|NOMBRE|:)/gi, '').trim();
+    const limpiar = txt => txt.replace(/(FOLIO|MARCA|L[ÍI]NEA|MODELO|AÑO|N[ÚU]MERO DE SERIE|SERIE|MOTOR|NOMBRE DEL CONTRIBUYENTE|NOMBRE|:)/gi, '').trim();
 
-    const nombre = texto.match(/(NOMBRE|SOLICITANTE)[\s:]+[A-ZÑÁÉÍÓÚ\s]+/);
+    const nombre = texto.match(/(NOMBRE|CONTRIBUYENTE)[\s:]+[A-ZÑÁÉÍÓÚ\s]+/);
     if (nombre) document.getElementById("nombre").value = limpiar(nombre[0]);
 
-    const folio = texto.match(/\b0[0-9]{3,}\b/);
+    const folio = texto.match(/\b[A-Z]{2}[0-9]{4}\b/);
     if (folio) document.getElementById("folio").value = folio[0];
 
     const marca = texto.match(/MARCA\s+[A-Z0-9ÑÁÉÍÓÚ\s]+/);
@@ -171,27 +169,26 @@
     const linea = texto.match(/L[ÍI]NEA\s+[A-Z0-9ÑÁÉÍÓÚ\s]+/);
     if (linea) document.getElementById("linea").value = limpiar(linea[0]);
 
-    const año = texto.match(/\b(19[5-9][0-9]|20[0-4][0-9])\b/);
+    const año = texto.match(/\b(19[5-9][0-9]|20[0-4][0-9]|2050)\b/);
     if (año) document.getElementById("anio").value = año[0];
 
     const serie = texto.match(/\b[A-HJ-NPR-Z0-9]{11,17}\b/);
     if (serie) {
-      document.getElementById("serie").value = serie[0];
-
-      // Consulta a API de VIN gringa
+      const vin = serie[0];
+      document.getElementById("serie").value = vin;
       try {
-        const res = await fetch(`https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVinValues/${serie[0]}?format=json`);
+        const res = await fetch(`https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVin/${vin}?format=json`);
         const data = await res.json();
-        const d = data.Results[0];
-        if (!document.getElementById("marca").value && d.Make) document.getElementById("marca").value = d.Make;
-        if (!document.getElementById("linea").value && d.Model) document.getElementById("linea").value = d.Model;
-        if (!document.getElementById("anio").value && d.ModelYear) document.getElementById("anio").value = d.ModelYear;
-      } catch (e) {
-        console.log("Error al consultar la API NHTSA", e);
+        const r = data.Results[0];
+        if (r.Make) document.getElementById("marca").value = r.Make.toUpperCase();
+        if (r.Model) document.getElementById("linea").value = r.Model.toUpperCase();
+        if (r.ModelYear) document.getElementById("anio").value = r.ModelYear;
+      } catch (err) {
+        console.warn("Error al consultar API VIN:", err);
       }
     }
 
-    const motor = texto.match(/(MOTOR|HECHO EN|FABRICADO EN|SIN NÚMERO|NO TIENE|NO CUENTA|S\/N|SN)\s*[A-Z0-9ÑÁÉÍÓÚ\s\-]*/);
+    const motor = texto.match(/(MOTOR|HECHO EN|FABRICADO EN|SIN NÚMERO|S\/N|NO TIENE|NO CUENTA)[\s:A-Z0-9ÁÉÍÓÚÑ\-]+/);
     if (motor) document.getElementById("motor").value = limpiar(motor[0]);
   });
 </script>
