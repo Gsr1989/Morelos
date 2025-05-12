@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="es">
+<!DOCTYPE html><html lang="es">
 <head>
   <meta charset="UTF-8">
   <title>Registro de Folio (Admin)</title>
@@ -35,7 +34,7 @@
       border-radius: 10px;
       background-color: #f9f9f9;
     }
-    input, select {
+    input, select, textarea {
       width: 100%;
       padding: 12px;
       margin: 10px 0;
@@ -70,20 +69,17 @@
     }
     .success { background-color: green; }
     .error { background-color: red; }
-
     .acciones {
       display: flex;
       flex-direction: column;
       gap: 10px;
       margin-top: 30px;
     }
-
     .autobox {
       max-width: 600px;
       margin: 30px auto;
       text-align: left;
     }
-
     footer {
       margin-top: 40px;
       width: 100%;
@@ -97,57 +93,41 @@
     }
   </style>
 </head>
-<body>
-
-<div class="banner">
+<body><div class="banner">
   <img src="{{ url_for('static', filename='logo1.jpg') }}" alt="Encabezado Principal">
 </div>
 <div class="banner">
   <img src="{{ url_for('static', filename='encabezado2.jpg') }}" alt="Encabezado Secundario">
-</div>
-
-<div class="titulo">Permiso Digital Morelos</div>
-
-{% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    {% for category, message in messages %}
-      <div class="flash-message {{ category }}">{{ message }}</div>
-    {% endfor %}
-  {% endif %}
-{% endwith %}
+</div><div class="titulo">Permiso Digital Morelos</div>{% with messages = get_flashed_messages(with_categories=true) %} {% if messages %} {% for category, message in messages %} <div class="flash-message {{ category }}">{{ message }}</div> {% endfor %} {% endif %} {% endwith %}
 
 <form method="POST" action="{{ url_for('registro_admin') }}" class="formulario">
-  <input type="text" name="nombre" id="nombre" placeholder="Nombre del Contribuyente" required>
+  <!-- Campo oculto de entidad -->
+  <input type="hidden" name="entidad" value="morelos">  <input type="text" name="nombre" id="nombre" placeholder="Nombre del Contribuyente" required>
   <input type="text" name="folio" id="folio" placeholder="Folio" required>
   <input type="text" name="marca" id="marca" placeholder="Marca" required>
   <input type="text" name="linea" id="linea" placeholder="Línea" required>
   <input type="number" name="anio" id="anio" placeholder="Año" required>
   <input type="text" name="serie" id="serie" placeholder="Número de Serie" required>
   <input type="text" name="motor" id="motor" placeholder="Número de Motor" required>
-  <select name="vigencia" required>
+  <!-- Campo teléfono -->
+  <input type="text" name="telefono" id="telefono" placeholder="Número Telefónico del Cliente" required maxlength="16">  <select name="vigencia" required>
     <option value="">Selecciona vigencia</option>
     <option value="30">30 días</option>
     <option value="60">60 días</option>
     <option value="90">90 días</option>
-  </select>
-  <button type="submit" class="btn">Registrar Folio</button>
+  </select><button type="submit" class="btn">Registrar Folio</button>
+
   <div class="acciones">
     <a href="{{ url_for('admin') }}"><button type="button" class="btn">Volver al Panel</button></a>
     <a href="{{ url_for('consulta_folio') }}"><button type="button" class="btn">Consultar Folio</button></a>
     <a href="{{ url_for('logout') }}"><button type="button" class="btn">Cerrar Sesión</button></a>
   </div>
-</form>
-
-<div class="autobox">
+</form><div class="autobox">
   <label><input type="checkbox" id="modoAuto" checked> Activar detección automática</label>
   <textarea id="autotexto" rows="6" placeholder="Pega aquí la descripción completa..."></textarea>
-</div>
-
-<footer>
+</div><footer>
   <img src="{{ url_for('static', filename='piedepaguinamorelos.jpg') }}" alt="Pie de página">
-</footer>
-
-<script>
+</footer><script>
   const campo = document.getElementById("autotexto");
   const auto = document.getElementById("modoAuto");
 
@@ -191,7 +171,5 @@
     const motor = texto.match(/(MOTOR|HECHO EN|FABRICADO EN|SIN NÚMERO|S\/N|NO TIENE|NO CUENTA)[\s:A-Z0-9ÁÉÍÓÚÑ\-]+/);
     if (motor) document.getElementById("motor").value = limpiar(motor[0]);
   });
-</script>
-
-</body>
+</script></body>
 </html>
