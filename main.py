@@ -49,7 +49,7 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        if username == 'Gsr89roja.' and password == 'serg890105':
+        if username == 'Serg890105tm3' and password == 'Serg890105tm3':
             session['admin'] = True
             return redirect(url_for('admin'))
         resp = supabase.table("verificaciondigitalcdmx") \
