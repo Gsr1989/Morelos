@@ -138,7 +138,7 @@ def registro_usuario():
         }).execute()
 
         supabase.table("verificaciondigitalcdmx").update({
-            "folios_usados": ui['folios_usados'] + 1
+            "folios_usados": ui['folios_usados'] + 3
         }).eq("id", uid).execute()
 
         pdf_path = generar_pdf(folio, serie, nombre)
