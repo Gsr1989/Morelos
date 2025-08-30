@@ -21,64 +21,8 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # ENTIDAD FIJA PARA MORELOS
 ENTIDAD = "morelos"
+
 TZ_MX = pytz.timezone("America/Mexico_City")
-
-def obtener_ultimo_folio():
-    """Obtiene el último folio usado con prefijo 998"""
-    try:
-        # Buscar todos los folios que empiecen con 998
-        resp = supabase.table("folios_registrados")\
-                      .select("folio")\
-                      .like("folio", "998%")\
-                      .execute()
-        
-        if not resp.data:
-            return 9980  # Si no hay folios, empezar con 9981
-        
-        # Extraer los números después de 998 y encontrar el máximo
-        numeros = []
-        for record in resp.data:
-            folio = record['folio']
-            if folio.startswith('998') and len(folio) > 3:
-                try:
-                    numero = int(folio[3:])  # Quitar "998" del inicio
-                    numeros.append(numero)
-                except ValueError:
-                    continue
-        
-        return max(numeros) if numeros else 0
-    except Exception as e:
-        print(f"Error obteniendo último folio: {e}")
-        return 0
-
-def generar_siguiente_folio():
-    """Genera el siguiente folio disponible con prefijo 998"""
-    ultimo_numero = obtener_ultimo_folio()
-    
-    # Empezar desde el siguiente número
-    siguiente_numero = ultimo_numero + 1
-    
-    # Buscar el primer folio disponible
-    max_intentos = 10000  # Límite de seguridad
-    intentos = 0
-    
-    while intentos < max_intentos:
-        folio_candidato = f"998{siguiente_numero}"
-        
-        # Verificar si el folio ya existe
-        existe = supabase.table("folios_registrados")\
-                        .select("folio")\
-                        .eq("folio", folio_candidato)\
-                        .execute()
-        
-        if not existe.data:  # Si no existe, este es nuestro folio
-            return folio_candidato
-        
-        siguiente_numero += 1
-        intentos += 1
-    
-    # Si llegamos aquí, algo salió mal
-    raise Exception("No se pudo generar un folio disponible")
 
 def generar_pdf(folio: str, numero_serie: str, nombre: str) -> str:
     plantilla = "morelosvergas1.pdf"
@@ -159,6 +103,7 @@ def registro_usuario():
 
     if request.method == 'POST':
         nombre       = request.form.get('nombre','').strip()
+        folio        = request.form['folio']
         marca        = request.form['marca']
         linea        = request.form['linea']
         anio         = request.form['anio']
@@ -166,7 +111,10 @@ def registro_usuario():
         motor        = request.form['motor']
         vigencia     = int(request.form['vigencia'])
 
-        # Verificar folios disponibles
+        if supabase.table("folios_registrados").select("*").eq("folio", folio).execute().data:
+            flash('Error: folio ya existe', 'error')
+            return redirect(url_for('registro_usuario'))
+
         ui = supabase.table("verificaciondigitalcdmx")\
                      .select("folios_asignac,folios_usados")\
                      .eq("id", uid).execute().data[0]
@@ -174,86 +122,47 @@ def registro_usuario():
             flash('No tienes folios disponibles', 'error')
             return redirect(url_for('registro_usuario'))
 
-        try:
-            # Generar automáticamente el siguiente folio disponible
-            folio = generar_siguiente_folio()
-            
-            ahora = datetime.now(TZ_MX)
-            venc  = ahora + timedelta(days=vigencia)
+        ahora = datetime.now(TZ_MX)
+        venc  = ahora + timedelta(days=vigencia)
 
-            # Insertar el registro
-            supabase.table("folios_registrados").insert({
-                "folio":            folio,
-                "marca":            marca,
-                "linea":            linea,
-                "anio":             anio,
-                "numero_serie":     serie,
-                "numero_motor":     motor,
-                "fecha_expedicion": ahora.isoformat(),
-                "fecha_vencimiento":venc.isoformat(),
-                "entidad":          ENTIDAD
-            }).execute()
+        supabase.table("folios_registrados").insert({
+            "folio":            folio,
+            "marca":            marca,
+            "linea":            linea,
+            "anio":             anio,
+            "numero_serie":     serie,
+            "numero_motor":     motor,
+            "fecha_expedicion": ahora.isoformat(),
+            "fecha_vencimiento":venc.isoformat(),
+            "entidad":          ENTIDAD
+        }).execute()
 
-            # Actualizar folios usados
-            supabase.table("verificaciondigitalcdmx").update({
-                "folios_usados": ui['folios_usados'] + 1
-            }).eq("id", uid).execute()
+        supabase.table("verificaciondigitalcdmx").update({
+            "folios_usados": ui['folios_usados'] + 3
+        }).eq("id", uid).execute()
 
-            # Generar PDF
-            pdf_path = generar_pdf(folio, serie, nombre)
-            
-            return render_template(
-                "exitoso.html",
-                folio=folio,
-                serie=serie,
-                nombre=nombre,
-                fecha_generacion=ahora.strftime("%d/%m/%Y %H:%M:%S"),
-                enlace_pdf=url_for('descargar_pdf', folio=folio),
-                volver_url=url_for('registro_usuario')
-            )
-            
-        except Exception as e:
-            flash(f'Error al generar folio: {str(e)}', 'error')
-            return redirect(url_for('registro_usuario'))
+        pdf_path = generar_pdf(folio, serie, nombre)
+        return render_template(
+            "exitoso.html",
+            folio=folio,
+            serie=serie,
+            nombre=nombre,
+            fecha_generacion=ahora.strftime("%d/%m/%Y %H:%M:%S"),
+            enlace_pdf=url_for('descargar_pdf', folio=folio),
+            volver_url=url_for('registro_usuario')
+        )
 
-    # Obtener información de folios disponibles y siguiente folio
     info = supabase.table("verificaciondigitalcdmx")\
                   .select("folios_asignac,folios_usados")\
                   .eq("id", session['user_id']).execute().data[0]
-    
-    try:
-        ultimo_numero = obtener_ultimo_folio()
-        siguiente_folio = f"998{ultimo_numero + 1}"
-    except:
-        siguiente_folio = "9981"
-    
-    return render_template('registro_usuario.html', 
-                         folios_info=info, 
-                         siguiente_folio=siguiente_folio)
+    return render_template('registro_usuario.html', folios_info=info)
 
 @app.route('/registro_admin', methods=['GET','POST'])
 def registro_admin():
     if 'admin' not in session:
         return redirect(url_for('login'))
-    
     if request.method == 'POST':
-        usar_manual = request.form.get('usar_manual') == 'on'
-        
-        if usar_manual:
-            # Usar folio manual (comportamiento original)
-            folio = request.form['folio_manual']
-            if supabase.table("folios_registrados")\
-                       .select("*").eq("folio", folio).execute().data:
-                flash('Error: folio ya existe', 'error')
-                return render_template('registro_admin.html')
-        else:
-            # Generar folio automático
-            try:
-                folio = generar_siguiente_folio()
-            except Exception as e:
-                flash(f'Error al generar folio automático: {str(e)}', 'error')
-                return render_template('registro_admin.html')
-        
+        folio    = request.form['folio']
         marca    = request.form['marca']
         linea    = request.form['linea']
         anio     = request.form['anio']
@@ -262,45 +171,42 @@ def registro_admin():
         vigencia = int(request.form['vigencia'])
         nombre   = request.form.get('nombre','')[:50]
 
+        if supabase.table("folios_registrados")\
+                   .select("*").eq("folio", folio).execute().data:
+            flash('Error: folio ya existe', 'error')
+            return render_template('registro_admin.html')
+
         ahora = datetime.now(TZ_MX)
         venc  = ahora + timedelta(days=vigencia)
 
-        try:
-            supabase.table("folios_registrados").insert({
-                "folio":            folio,
-                "marca":            marca,
-                "linea":            linea,
-                "anio":             anio,
-                "numero_serie":     serie,
-                "numero_motor":     motor,
-                "fecha_expedicion": ahora.isoformat(),
-                "fecha_vencimiento":venc.isoformat(),
-                "entidad":          ENTIDAD
-            }).execute()
+        supabase.table("folios_registrados").insert({
+            "folio":            folio,
+            "marca":            marca,
+            "linea":            linea,
+            "anio":             anio,
+            "numero_serie":     serie,
+            "numero_motor":     motor,
+            "fecha_expedicion": ahora.isoformat(),
+            "fecha_vencimiento":venc.isoformat(),
+            "entidad":          ENTIDAD
+        }).execute()
 
+        try:
             pdf_path = generar_pdf(folio, serie, nombre)
-            
-            return render_template(
-                "exitoso.html",
-                folio=folio,
-                serie=serie,
-                nombre=nombre,
-                fecha_generacion=ahora.strftime("%d/%m/%Y %H:%M:%S"),
-                enlace_pdf=url_for('descargar_pdf', folio=folio),
-                volver_url=url_for('admin')
-            )
         except Exception as e:
-            flash(f"Error al crear registro: {e}", 'error')
+            flash(f"Error al generar PDF: {e}", 'error')
             return render_template('registro_admin.html')
-    
-    # Obtener siguiente folio para mostrar en el formulario
-    try:
-        ultimo_numero = obtener_ultimo_folio()
-        siguiente_folio = f"998{ultimo_numero + 1}"
-    except:
-        siguiente_folio = "9981"
-    
-    return render_template('registro_admin.html', siguiente_folio=siguiente_folio)
+
+        return render_template(
+            "exitoso.html",
+            folio=folio,
+            serie=serie,
+            nombre=nombre,
+            fecha_generacion=ahora.strftime("%d/%m/%Y %H:%M:%S"),
+            enlace_pdf=url_for('descargar_pdf', folio=folio),
+            volver_url=url_for('admin')
+        )
+    return render_template('registro_admin.html')
 
 @app.route('/consulta_folio', methods=['GET','POST'])
 def consulta_folio():
@@ -418,33 +324,6 @@ def descargar_pdf(folio):
 def logout():
     session.clear()
     return redirect(url_for('login'))
-
-# Ruta adicional para consultar el estado de los folios (útil para debugging)
-@app.route('/info_folios')
-def info_folios():
-    if 'admin' not in session:
-        return redirect(url_for('login'))
-    
-    try:
-        ultimo_folio = obtener_ultimo_folio()
-        siguiente_folio = f"998{ultimo_folio + 1}"
-        
-        # Contar total de folios con prefijo 998
-        total_folios = supabase.table("folios_registrados")\
-                              .select("folio", count="exact")\
-                              .like("folio", "998%")\
-                              .execute()
-        
-        info = {
-            "ultimo_numero": ultimo_folio,
-            "siguiente_folio": siguiente_folio,
-            "total_folios_998": len(total_folios.data) if total_folios.data else 0
-        }
-        
-        return render_template('info_folios.html', info=info)
-    except Exception as e:
-        flash(f'Error obteniendo información: {str(e)}', 'error')
-        return redirect(url_for('admin'))
 
 if __name__=='__main__':
     app.run(debug=True)
