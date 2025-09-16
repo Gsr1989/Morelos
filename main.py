@@ -325,5 +325,37 @@ def logout():
     session.clear()
     return redirect(url_for('login'))
 
+@app.route('/consulta/<folio>')
+def consulta_qr(folio: str):
+    """
+    Ruta para que el QR dinámico apunte a un folio específico
+    y lo muestre con tu template `resultado_consulta.html`.
+    """
+    row = supabase.table("folios_registrados") \
+                  .select("*") \
+                  .eq("folio", folio).execute().data
+    if not row:
+        return render_template("resultado_consulta.html", 
+                               resultado={"estado":"NO ENCONTRADO","folio":folio})
+
+    r = row[0]
+    fexp = datetime.fromisoformat(r['fecha_expedicion']).astimezone(TZ_MX)
+    fven = datetime.fromisoformat(r['fecha_vencimiento']).astimezone(TZ_MX)
+    estado = "VIGENTE" if datetime.now(TZ_MX) <= fven else "VENCIDO"
+
+    resultado = {
+        "estado": estado,
+        "folio": r['folio'],
+        "fecha_expedicion":  fexp.strftime("%d/%m/%Y"),
+        "fecha_vencimiento": fven.strftime("%d/%m/%Y"),
+        "marca":  r['marca'],
+        "linea":  r['linea'],
+        "año":    r['anio'],
+        "numero_serie":  r['numero_serie'],
+        "numero_motor":  r['numero_motor'],
+        "entidad":       r.get('entidad','')
+    }
+    return render_template("resultado_consulta.html", resultado=resultado)
+
 if __name__=='__main__':
     app.run(debug=True)
