@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Administrar Folios - Morelos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            background: #ffffff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #000;
+        }
+        header img,
+        .franja-abajo img,
+        footer img {
+            width: 100%;
+            display: block;
+        }
+
+        .titulo {
+            text-align: center;
+            font-size: 26px;
+            font-weight: bold;
+            margin: 20px 0 10px;
+            color: #a88b58;
+        }
+
+        .flash-container {
+            max-width: 95%;
+            margin: 10px auto;
+        }
+        .flash {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .flash.success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .flash.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .busqueda {
+            max-width: 95%;
+            margin: auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 10px;
+        }
+        .busqueda input,
+        .busqueda select,
+        .busqueda button {
+            padding: 10px;
+            font-size: 14px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+        .busqueda button {
+            background: #2f4f2f;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .busqueda button:hover {
+            background: #3e7142;
+        }
+
+        #search {
+            display: block;
+            margin: 0 auto 15px;
+            padding: 10px;
+            width: 90%;
+            max-width: 400px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        .contador {
+            text-align: center;
+            margin: 15px 0;
+            font-size: 16px;
+            color: #666;
+        }
+
+        .tabla-container {
+            max-width: 95%;
+            margin: auto;
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 40px;
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: center;
+            font-size: 14px;
+        }
+        th {
+            background: #2f4f2f;
+            color: #fff;
+            font-weight: bold;
+        }
+        tr:hover {
+            background: #f5f5f5;
+        }
+        .estado-verde {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        .estado-rojo {
+            color: #f44336;
+            font-weight: bold;
+        }
+
+        .btn {
+            padding: 6px 10px;
+            font-size: 13px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 2px 0;
+            display: inline-block;
+            text-decoration: none;
+        }
+        .btn-editar {
+            background: #2a72a5;
+            color: #fff;
+        }
+        .btn-editar:hover {
+            background: #1e5b88;
+        }
+        .btn-eliminar {
+            background: #f44336;
+            color: #fff;
+        }
+        .btn-eliminar:hover {
+            background: #d32f2f;
+        }
+        .btn-descargar {
+            background: #4CAF50;
+            color: #fff;
+        }
+        .btn-descargar:hover {
+            background: #45a049;
+        }
+
+        .volver {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .volver a {
+            background: #2f4f2f;
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: bold;
+        }
+        .volver a:hover {
+            background: #3e7142;
+        }
+
+        @media(max-width:600px){
+            .titulo { font-size: 22px; }
+            th, td { font-size: 12px; padding: 8px 4px; }
+            .busqueda { flex-direction: column; align-items: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <img src="{{ url_for('static', filename='logo1.jpg') }}" alt="Logo">
+    </header>
+    <header>
+        <img src="{{ url_for('static', filename='encabezado2.jpg') }}" alt="Encabezado">
+    </header>
+
+    <div class="titulo">Administración de Folios Registrados - Morelos</div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-container">
+          {% for cat,msg in messages %}
+            <div class="flash {{ cat }}">{{ msg }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <form method="get" action="{{ url_for('admin_folios') }}" class="busqueda">
+        <input type="text" name="filtro" placeholder="Buscar en servidor..." value="{{ filtro }}">
+        <select name="criterio">
+            <option value="folio" {% if criterio=='folio' %}selected{% endif %}>Folio</option>
+            <option value="numero_serie" {% if criterio=='numero_serie' %}selected{% endif %}>Serie</option>
+        </select>
+        <select name="estado">
+            <option value="todos" {% if estado=='todos' %}selected{% endif %}>Todos</option>
+            <option value="vigente" {% if estado=='vigente' %}selected{% endif %}>Vigente</option>
+            <option value="vencido" {% if estado=='vencido' %}selected{% endif %}>Vencido</option>
+        </select>
+        <input type="date" name="fecha_inicio" value="{{ fecha_inicio }}">
+        <input type="date" name="fecha_fin" value="{{ fecha_fin }}">
+        <select name="ordenar">
+            <option value="desc" {% if ordenar=='desc' %}selected{% endif %}>Más recientes</option>
+            <option value="asc" {% if ordenar=='asc' %}selected{% endif %}>Más antiguos</option>
+        </select>
+        <button type="submit">🔍 Buscar</button>
+    </form>
+
+    <input id="search" type="text" placeholder="🔍 Buscar en esta tabla en tiempo real...">
+
+    <div class="contador">
+        Total de registros: <strong id="total-registros">{{ folios|length }}</strong>
+    </div>
+
+    <div class="tabla-container">
+        <table id="tabla">
+            <thead>
+                <tr>
+                    <th>Folio</th><th>Marca</th><th>Línea</th><th>Año</th>
+                    <th>Serie</th><th>Motor</th><th>Color</th><th>Tipo</th>
+                    <th>Expedición</th><th>Vencimiento</th><th>Estado</th><th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for folio in folios %}
+                <tr>
+                    <td><strong>{{ folio.folio }}</strong></td>
+                    <td>{{ folio.marca }}</td>
+                    <td>{{ folio.linea }}</td>
+                    <td>{{ folio.anio }}</td>
+                    <td>{{ folio.numero_serie }}</td>
+                    <td>{{ folio.numero_motor }}</td>
+                    <td>{{ folio.color or 'N/A' }}</td>
+                    <td>{{ folio.tipo or 'N/A' }}</td>
+                    <td>{{ folio.fecha_expedicion[:10] }}</td>
+                    <td>{{ folio.fecha_vencimiento[:10] }}</td>
+                    <td>
+                        <span class="{% if folio.estado=='VIGENTE' %}estado-verde{% else %}estado-rojo{% endif %}">
+                            {{ folio.estado }}
+                        </span>
+                    </td>
+                    <td>
+                        <a href="{{ url_for('editar_folio', folio=folio.folio) }}">
+                            <button type="button" class="btn btn-editar">✏️ Editar</button>
+                        </a>
+                        <form method="POST" action="{{ url_for('eliminar_folio') }}" style="display:inline">
+                            <input type="hidden" name="folio" value="{{ folio.folio }}">
+                            <button type="submit" class="btn btn-eliminar" 
+                                    onclick="return confirm('¿Seguro que quieres eliminar el folio {{ folio.folio }}?')">
+                                🗑️ Eliminar
+                            </button>
+                        </form>
+                        <a href="{{ url_for('descargar_pdf', folio=folio.folio) }}" target="_blank">
+                            <button type="button" class="btn btn-descargar">📥 PDF</button>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="volver">
+        <a href="{{ url_for('admin') }}">← Volver al Panel</a>
+    </div>
+
+    <footer>
+        <img src="{{ url_for('static', filename='piedepaguinamorelos.jpg') }}" alt="Pie">
+    </footer>
+
+    <script>
+        const searchInput = document.getElementById('search');
+        const tabla = document.getElementById('tabla');
+        const totalRegistros = document.getElementById('total-registros');
+
+        searchInput.addEventListener('keydown', e => {
+            if (e.key === 'Enter') e.preventDefault();
+        });
+
+        searchInput.addEventListener('input', function() {
+            const term = this.value.toLowerCase();
+            const rows = tabla.querySelectorAll('tbody tr');
+            let count = 0;
+
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                if (text.includes(term)) {
+                    row.style.display = '';
+                    count++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            totalRegistros.textContent = count;
+        });
+    </script>
+
+</body>
+</html>
