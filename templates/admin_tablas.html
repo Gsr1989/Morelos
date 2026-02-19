@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Administrar Tablas - Morelos</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      background: #fff;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    header img {
+      width: 100%;
+      display: block;
+    }
+    .titulo {
+      text-align: center;
+      font-size: 26px;
+      font-weight: bold;
+      margin: 20px 0 10px;
+      color: #a88b58;
+    }
+    .subtitulo {
+      text-align: center;
+      font-size: 16px;
+      color: #666;
+      margin-bottom: 30px;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .tabla-card {
+      background: #f9f9f9;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-left: 5px solid #2f4f2f;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .tabla-card h3 {
+      margin: 0 0 10px;
+      color: #2f4f2f;
+    }
+    .tabla-card p {
+      margin: 5px 0;
+      color: #666;
+    }
+    .btn {
+      background: #2f4f2f;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 6px;
+      text-decoration: none;
+      display: inline-block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    .btn:hover {
+      background: #3e7142;
+    }
+    .volver {
+      text-align: center;
+      margin: 20px 0;
+    }
+    .volver a {
+      background: #2f4f2f;
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 15px;
+    }
+    .volver a:hover {
+      background: #3e7142;
+    }
+    footer img {
+      width: 100%;
+      display: block;
+      margin-top: 40px;
+    }
+    @media(max-width:600px){
+      .titulo { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <img src="{{ url_for('static', filename='logo1.jpg') }}" alt="Logo">
+</header>
+<header>
+  <img src="{{ url_for('static', filename='encabezado2.jpg') }}" alt="Encabezado">
+</header>
+
+<div class="titulo">🗄️ Administración de Tablas de Base de Datos</div>
+<div class="subtitulo">Secretaría de Movilidad - Morelos</div>
+
+<div class="container">
+  {% for nombre, info in tablas.items() %}
+  <div class="tabla-card">
+    <h3>📊 {{ info.nombre }}</h3>
+    <p><strong>Tabla:</strong> {{ nombre }}</p>
+    <p><strong>Columnas:</strong> {{ info.columnas|length }}</p>
+    <a href="{{ url_for('admin_tabla', nombre_tabla=nombre) }}" class="btn">Ver y Editar Datos</a>
+  </div>
+  {% endfor %}
+</div>
+
+<div class="volver">
+  <a href="{{ url_for('admin') }}">← Volver al Panel Admin</a>
+</div>
+
+<footer>
+  <img src="{{ url_for('static', filename='piedepaguinamorelos.jpg') }}" alt="Pie">
+</footer>
+
+</body>
+</html>
