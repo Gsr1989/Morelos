@@ -2,196 +2,265 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Registro de Folio</title>
+    <title>Registro Usuario - Morelos</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
         body {
-            background-color: #ffffff;
+            background: #fff;
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
         }
-
-        .banner {
-            width: 100%;
-            text-align: center;
-        }
-
         .banner img {
             width: 100%;
-            max-width: 100%;
-            height: auto;
             display: block;
         }
-
-        .texto-morelos {
+        .titulo {
             text-align: center;
             color: #a88b58;
             font-size: 26px;
             font-weight: bold;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 10px 0 30px 0;
+            margin: 20px 0 10px;
         }
-
-        .info-folios {
+        .subtitulo {
             text-align: center;
-            margin-top: 10px;
-            font-size: 18px;
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 20px;
         }
-
+        
+        /* Contador de folios */
+        .contador-folios {
+            max-width: 900px;
+            margin: 20px auto;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .card-folio {
+            background: linear-gradient(135deg, #2f4f2f 0%, #3e7142 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            flex: 1;
+            min-width: 150px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .card-folio h3 {
+            font-size: 14px;
+            margin: 0 0 10px;
+            opacity: 0.9;
+        }
+        .card-folio .numero {
+            font-size: 32px;
+            font-weight: bold;
+        }
+        
+        /* Barra de progreso */
+        .progreso-container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        .progreso-bar {
+            background: #e0e0e0;
+            height: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+        .progreso-fill {
+            background: linear-gradient(90deg, #2f4f2f, #3e7142);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+        .progreso-text {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+        
         .formulario {
             max-width: 600px;
             margin: 30px auto;
-            padding: 20px;
-            border-radius: 10px;
-            background-color: #f9f9f9;
+            padding: 30px;
+            border-radius: 15px;
+            background: #f9f9f9;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
-
+        .campo {
+            margin-bottom: 15px;
+        }
+        .campo label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
         input, select {
             width: 100%;
             padding: 12px;
-            margin: 10px 0;
-            border-radius: 6px;
-            border: 1px solid #ccc;
+            border-radius: 8px;
+            border: 2px solid #ddd;
             font-size: 16px;
+            box-sizing: border-box;
+            text-transform: uppercase;
         }
-
+        input:focus, select:focus {
+            outline: none;
+            border-color: #2f4f2f;
+        }
         .btn {
-            background-color: #2f4f2f;
-            color: white;
+            background: #2f4f2f;
+            color: #fff;
             border: none;
-            padding: 14px 22px;
+            padding: 14px;
             font-size: 16px;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
             width: 100%;
-            margin-top: 15px;
-        }
-
-        .btn:hover {
-            background-color: #3e7142;
-        }
-
-        .mensaje {
-            margin: 20px auto;
-            max-width: 600px;
-            padding: 10px;
-            text-align: center;
+            margin-top: 10px;
             font-weight: bold;
-            border-radius: 5px;
         }
-
-        .success {
-            background-color: #4CAF50;
-            color: white;
+        .btn:hover {
+            background: #3e7142;
         }
-
-        .error {
-            background-color: #f44336;
-            color: white;
+        .btn-secundario {
+            background: #6c757d;
+            margin-top: 5px;
         }
-
-        .botones-acciones {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 20px;
+        .btn-secundario:hover {
+            background: #5a6268;
         }
-
-        .botones-acciones a {
-            background-color: #2f4f2f;
-            color: white;
-            padding: 10px 18px;
+        .flash {
+            padding: 10px;
             border-radius: 6px;
-            text-decoration: none;
-            font-size: 15px;
-            transition: background-color 0.3s ease;
+            margin-bottom: 15px;
         }
-
-        .botones-acciones a:hover {
-            background-color: #3e7142;
+        .flash.success {
+            background: #d4edda;
+            color: #155724;
         }
-
-        footer {
-            margin-top: 40px;
-            width: 100%;
-            text-align: center;
+        .flash.error {
+            background: #f8d7da;
+            color: #721c24;
         }
-
         footer img {
             width: 100%;
-            max-width: 100%;
-            height: auto;
             display: block;
+            margin-top: 40px;
         }
-
-        @media (max-width: 600px) {
-            .texto-morelos {
-                font-size: 22px;
-            }
+        @media(max-width:600px){
+            .titulo { font-size: 22px; }
+            .contador-folios { flex-direction: column; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Encabezado institucional -->
-    <div class="banner">
-        <img src="{{ url_for('static', filename='logo1.jpg') }}" alt="Encabezado Principal">
+<div class="banner">
+    <img src="{{ url_for('static', filename='logo1.jpg') }}" alt="Logo">
+</div>
+<div class="banner">
+    <img src="{{ url_for('static', filename='encabezado2.jpg') }}" alt="Encabezado">
+</div>
+
+<div class="titulo">Generar Permiso de Circulación</div>
+<div class="subtitulo">Secretaría de Movilidad - Morelos</div>
+
+<!-- Contador de folios -->
+<div class="contador-folios">
+    <div class="card-folio">
+        <h3>ASIGNADOS</h3>
+        <div class="numero">{{ folios_asignados }}</div>
     </div>
-
-    <div class="banner">
-        <img src="{{ url_for('static', filename='encabezado2.jpg') }}" alt="Encabezado Secundario">
+    <div class="card-folio">
+        <h3>USADOS</h3>
+        <div class="numero">{{ folios_usados }}</div>
     </div>
-
-    <div class="texto-morelos">Permiso Digital Morelos</div>
-
-    <!-- Información de folios -->
-    <div class="info-folios">
-        <p>Folios asignados: <strong>{{ folios_info.folios_asignac }}</strong></p>
-        <p>Folios usados: <strong>{{ folios_info.folios_usados }}</strong></p>
-        <p>Folios restantes: <strong>{{ folios_info.folios_asignac - folios_info.folios_usados }}</strong></p>
+    <div class="card-folio">
+        <h3>DISPONIBLES</h3>
+        <div class="numero">{{ folios_disponibles }}</div>
     </div>
+</div>
 
-    <!-- Mensajes -->
+<!-- Barra de progreso -->
+<div class="progreso-container">
+    <div class="progreso-bar">
+        <div class="progreso-fill" style="width: {{ porcentaje }}%"></div>
+        <div class="progreso-text">{{ "%.1f"|format(porcentaje) }}% Utilizado</div>
+    </div>
+</div>
+
+<form method="POST" class="formulario">
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
-        {% for category, message in messages %}
-          <div class="mensaje {{ category }}">{{ message }}</div>
+        {% for cat, msg in messages %}
+          <div class="flash {{ cat }}">{{ msg }}</div>
         {% endfor %}
       {% endif %}
     {% endwith %}
-
-    <!-- Formulario -->
-    <form method="POST" class="formulario">
-        <input type="text" name="nombre" placeholder="Nombre del Solicitante" required maxlength="50">
-        <input type="text" name="folio" placeholder="Folio" required>
-        <input type="text" name="marca" placeholder="Marca" required>
-        <input type="text" name="linea" placeholder="Línea" required>
-        <input type="number" name="anio" placeholder="Año" required>
-        <input type="text" name="serie" placeholder="Número de Serie" required>
-        <input type="text" name="motor" placeholder="Número de Motor" required>
-
-        <select name="vigencia" required>
-            <option value="">Selecciona vigencia</option>
-            <option value="30">30 días</option>
-            <option value="60">60 días</option>
-            <option value="90">90 días</option>
-        </select>
-
-        <button type="submit" class="btn">Registrar Folio</button>
-    </form>
-
-    <!-- Botones -->
-    <div class="botones-acciones">
-        <a href="{{ url_for('consulta_folio') }}">Consultar Folio</a>
-        <a href="{{ url_for('logout') }}">Cerrar Sesión</a>
+    
+    <div class="campo">
+        <label for="marca">🚗 Marca del Vehículo:</label>
+        <input type="text" id="marca" name="marca" required>
     </div>
+    
+    <div class="campo">
+        <label for="linea">🏷️ Línea/Modelo:</label>
+        <input type="text" id="linea" name="linea" required>
+    </div>
+    
+    <div class="campo">
+        <label for="anio">📅 Año:</label>
+        <input type="number" id="anio" name="anio" min="1900" max="2099" required>
+    </div>
+    
+    <div class="campo">
+        <label for="serie">🔢 Número de Serie (VIN):</label>
+        <input type="text" id="serie" name="serie" required>
+    </div>
+    
+    <div class="campo">
+        <label for="motor">⚙️ Número de Motor:</label>
+        <input type="text" id="motor" name="motor" required>
+    </div>
+    
+    <div class="campo">
+        <label for="color">🎨 Color:</label>
+        <input type="text" id="color" name="color" required>
+    </div>
+    
+    <div class="campo">
+        <label for="tipo">🚙 Tipo de Vehículo:</label>
+        <input type="text" id="tipo" name="tipo" required>
+    </div>
+    
+    <div class="campo">
+        <label for="nombre">👤 Nombre del Titular:</label>
+        <input type="text" id="nombre" name="nombre" required>
+    </div>
+    
+    <div class="campo">
+        <label for="fecha_inicio">📆 Fecha de Inicio:</label>
+        <input type="date" id="fecha_inicio" name="fecha_inicio" required>
+    </div>
+    
+    <button type="submit" class="btn">💾 Generar Permiso</button>
+    <a href="{{ url_for('mis_permisos') }}">
+        <button type="button" class="btn btn-secundario">📋 Mis Permisos</button>
+    </a>
+</form>
 
-    <!-- Pie de página -->
-    <footer>
-        <img src="{{ url_for('static', filename='piedepaguinamorelos.jpg') }}" alt="Pie de página">
-    </footer>
+<footer>
+    <img src="{{ url_for('static', filename='piedepaguinamorelos.jpg') }}" alt="Pie">
+</footer>
 
 </body>
 </html>
