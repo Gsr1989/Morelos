@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Agregar Registro - Morelos</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      background: #fff;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    header img {
+      width: 100%;
+      display: block;
+    }
+    .titulo {
+      text-align: center;
+      font-size: 26px;
+      font-weight: bold;
+      margin: 20px 0 10px;
+      color: #a88b58;
+    }
+    .subtitulo {
+      text-align: center;
+      font-size: 16px;
+      color: #666;
+      margin-bottom: 30px;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .formulario {
+      background: #f9f9f9;
+      padding: 20px;
+      border-radius: 10px;
+    }
+    .campo {
+      margin-bottom: 15px;
+    }
+    .campo label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+      color: #333;
+    }
+    .campo input {
+      width: 100%;
+      padding: 10px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-sizing: border-box;
+    }
+    .campo small {
+      color: #666;
+      font-size: 12px;
+    }
+    .btn-submit {
+      background: #4CAF50;
+      color: #fff;
+      padding: 12px 24px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      width: 100%;
+    }
+    .btn-submit:hover {
+      background: #45a049;
+    }
+    .volver {
+      text-align: center;
+      margin: 20px 0;
+    }
+    .volver a {
+      background: #6c757d;
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 8px;
+      text-decoration: none;
+    }
+    .flash {
+      padding: 10px;
+      border-radius: 6px;
+      margin-bottom: 15px;
+    }
+    .flash.success {
+      background: #d4edda;
+      color: #155724;
+    }
+    .flash.error {
+      background: #f8d7da;
+      color: #721c24;
+    }
+    footer img {
+      width: 100%;
+      display: block;
+      margin-top: 40px;
+    }
+    @media(max-width:600px){
+      .titulo { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <img src="{{ url_for('static', filename='logo1.jpg') }}" alt="Logo">
+</header>
+<header>
+  <img src="{{ url_for('static', filename='encabezado2.jpg') }}" alt="Encabezado">
+</header>
+
+<div class="titulo">➕ Agregar Nuevo Registro</div>
+<div class="subtitulo">{{ info_tabla.nombre }}</div>
+
+<div class="container">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for cat, msg in messages %}
+        <div class="flash {{ cat }}">{{ msg }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <form method="POST" class="formulario">
+    {% for col in info_tabla.columnas %}
+      {% if col != 'id' %}
+        <div class="campo">
+          <label for="{{ col }}">{{ col }}:</label>
+          <input type="text" id="{{ col }}" name="{{ col }}">
+          {% if col == 'folio' %}
+            <small>Dejar vacío para auto-generar</small>
+          {% endif %}
+        </div>
+      {% endif %}
+    {% endfor %}
+
+    <button type="submit" class="btn-submit">💾 Agregar Registro</button>
+  </form>
+</div>
+
+<div class="volver">
+  <a href="{{ url_for('admin_tabla', nombre_tabla=nombre_tabla) }}">← Cancelar</a>
+</div>
+
+<footer>
+  <img src="{{ url_for('static', filename='piedepaguinamorelos.jpg') }}" alt="Pie">
+</footer>
+
+</body>
+</html>
