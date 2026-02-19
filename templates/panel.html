@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Panel de Administración</title>
+    <title>Panel de Administración - Morelos</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
         body {
@@ -26,8 +26,14 @@
             color: #a88b58;
             font-size: 26px;
             font-weight: bold;
-            margin: 10px 0 30px;
+            margin: 10px 0 10px;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .subtitulo {
+            text-align: center;
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 30px;
         }
         .botones {
             display: flex;
@@ -36,6 +42,7 @@
             gap: 15px;
             max-width: 600px;
             margin: 30px auto;
+            padding: 0 20px;
         }
         .btn {
             background-color: #2f4f2f;
@@ -45,10 +52,27 @@
             font-size: 16px;
             border-radius: 6px;
             cursor: pointer;
-            transition: background-color .3s;
+            transition: background-color .3s, transform .2s;
+            text-decoration: none;
+            display: inline-block;
+            width: 100%;
+            max-width: 280px;
+            text-align: center;
+            font-weight: bold;
         }
         .btn:hover {
             background-color: #3e7142;
+            transform: translateY(-2px);
+        }
+        .btn:active {
+            transform: translateY(0);
+        }
+        .btn-salir {
+            background-color: #c53030;
+            margin-top: 20px;
+        }
+        .btn-salir:hover {
+            background-color: #9b2c2c;
         }
         footer {
             margin-top: 40px;
@@ -61,9 +85,20 @@
             display: block;
         }
         @media (max-width: 600px) {
-            .texto-morelos { font-size: 22px; }
-            .botones { flex-direction: column; gap: 10px; }
-            .btn { width: 100%; }
+            .texto-morelos { 
+                font-size: 22px; 
+            }
+            .subtitulo {
+                font-size: 14px;
+            }
+            .botones { 
+                flex-direction: column; 
+                gap: 10px; 
+            }
+            .btn { 
+                width: 100%;
+                max-width: 100%;
+            }
         }
     </style>
 </head>
@@ -78,33 +113,39 @@
     </div>
 
     <!-- Título -->
-    <div class="texto-morelos">Permiso Digital Morelos</div>
+    <div class="texto-morelos">Panel de Administración</div>
+    <div class="subtitulo">Secretaría de Movilidad - Morelos</div>
 
     <!-- Botones -->
     <div class="botones">
         <!-- Registrar un folio nuevo (plantilla admin) -->
-        <a href="{{ url_for('registro_admin') }}">
-            <button class="btn">Registrar Folio</button>
+        <a href="{{ url_for('registro_admin') }}" class="btn">
+            📝 Registrar Folio
         </a>
 
         <!-- Ver todos los folios creados -->
-        <a href="{{ url_for('admin_folios') }}">
-            <button class="btn">Ver Todos los Folios</button>
+        <a href="{{ url_for('admin_folios') }}" class="btn">
+            📋 Ver Todos los Folios
         </a>
 
         <!-- Consultar estado de un folio -->
-        <a href="{{ url_for('consulta_folio') }}">
-            <button class="btn">Consultar Folio</button>
+        <a href="{{ url_for('consulta_folio') }}" class="btn">
+            🔍 Consultar Folio
         </a>
 
         <!-- Crear un usuario nuevo -->
-        <a href="{{ url_for('crear_usuario') }}">
-            <button class="btn">Crear Usuario</button>
+        <a href="{{ url_for('crear_usuario') }}" class="btn">
+            👤 Crear Usuario
+        </a>
+
+        <!-- Administrar Base de Datos -->
+        <a href="{{ url_for('admin_tablas') }}" class="btn">
+            🗄️ Administrar Tablas BD
         </a>
 
         <!-- Cerrar sesión -->
-        <a href="{{ url_for('logout') }}">
-            <button class="btn">Cerrar Sesión</button>
+        <a href="{{ url_for('logout') }}" class="btn btn-salir">
+            🚪 Cerrar Sesión
         </a>
     </div>
 
