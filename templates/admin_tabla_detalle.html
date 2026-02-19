@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ info_tabla.nombre }} - Morelos</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      background: #fff;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    header img {
+      width: 100%;
+      display: block;
+    }
+    .titulo {
+      text-align: center;
+      font-size: 26px;
+      font-weight: bold;
+      margin: 20px 0 10px;
+      color: #a88b58;
+    }
+    .container {
+      max-width: 95%;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .filtros {
+      background: #f9f9f9;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .filtros input, .filtros select, .filtros button {
+      padding: 8px;
+      font-size: 14px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    .filtros button {
+      background: #2f4f2f;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+    .filtros button:hover {
+      background: #3e7142;
+    }
+    .btn-agregar {
+      background: #4CAF50;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 6px;
+      text-decoration: none;
+      display: inline-block;
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
+    .btn-agregar:hover {
+      background: #45a049;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #f9f9f9;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    th {
+      background: #2f4f2f;
+      color: #fff;
+      padding: 12px;
+      text-align: left;
+    }
+    td {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+    tr:hover {
+      background: #f5f5f5;
+    }
+    .btn-tabla {
+      padding: 6px 12px;
+      font-size: 12px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 2px;
+    }
+    .btn-editar {
+      background: #2a72a5;
+      color: #fff;
+    }
+    .btn-eliminar {
+      background: #f44336;
+      color: #fff;
+    }
+    .volver {
+      text-align: center;
+      margin: 20px 0;
+    }
+    .volver a {
+      background: #2f4f2f;
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 8px;
+      text-decoration: none;
+    }
+    .flash {
+      padding: 10px;
+      border-radius: 6px;
+      margin-bottom: 15px;
+    }
+    .flash.success {
+      background: #d4edda;
+      color: #155724;
+    }
+    .flash.error {
+      background: #f8d7da;
+      color: #721c24;
+    }
+    footer img {
+      width: 100%;
+      display: block;
+      margin-top: 40px;
+    }
+    @media(max-width:600px){
+      .titulo { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <img src="{{ url_for('static', filename='logo1.jpg') }}" alt="Logo">
+</header>
+<header>
+  <img src="{{ url_for('static', filename='encabezado2.jpg') }}" alt="Encabezado">
+</header>
+
+<div class="titulo">📋 {{ info_tabla.nombre }}</div>
+
+<div class="container">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for cat, msg in messages %}
+        <div class="flash {{ cat }}">{{ msg }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <form method="get" class="filtros">
+    <select name="columna">
+      <option value="">Seleccionar columna...</option>
+      {% for col in info_tabla.columnas %}
+        <option value="{{ col }}" {% if columna_filtro == col %}selected{% endif %}>{{ col }}</option>
+      {% endfor %}
+    </select>
+    <input type="text" name="filtro" placeholder="Buscar..." value="{{ filtro }}">
+    <button type="submit">🔍 Buscar</button>
+    <a href="{{ url_for('admin_tabla', nombre_tabla=nombre_tabla) }}" 
+       style="background:#6c757d; color:#fff; padding:8px 12px; border-radius:6px; text-decoration:none">
+      Limpiar
+    </a>
+  </form>
+
+  <a href="{{ url_for('admin_agregar_registro', nombre_tabla=nombre_tabla) }}" class="btn-agregar">
+    ➕ Agregar Nuevo Registro
+  </a>
+
+  <div style="overflow-x:auto">
+    <table>
+      <thead>
+        <tr>
+          {% for col in info_tabla.columnas %}
+            <th>{{ col }}</th>
+          {% endfor %}
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for reg in registros %}
+        <tr>
+          {% for col in info_tabla.columnas %}
+            <td>{{ reg.get(col, '') }}</td>
+          {% endfor %}
+          <td>
+            <a href="{{ url_for('admin_editar_registro', nombre_tabla=nombre_tabla, registro_id=reg.get('id') or reg.get('folio')) }}">
+              <button type="button" class="btn-tabla btn-editar">✏️ Editar</button>
+            </a>
+            <form method="POST" 
+                  action="{{ url_for('admin_eliminar_registro', nombre_tabla=nombre_tabla, registro_id=reg.get('id') or reg.get('folio')) }}" 
+                  style="display:inline">
+              <button type="submit" class="btn-tabla btn-eliminar" 
+                      onclick="return confirm('¿Seguro que quieres eliminar este registro?')">
+                🗑️ Eliminar
+              </button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <p style="text-align:center; margin-top:20px; color:#666">
+    Total de registros: {{ registros|length }}
+  </p>
+</div>
+
+<div class="volver">
+  <a href="{{ url_for('admin_tablas') }}">← Volver a Tablas</a>
+</div>
+
+<footer>
+  <img src="{{ url_for('static', filename='piedepaguinamorelos.jpg') }}" alt="Pie">
+</footer>
+
+</body>
+</html>
