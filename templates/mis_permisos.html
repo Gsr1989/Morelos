@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Permisos Generados - Morelos</title>
+    <style>
+        body {
+            background-color: #ffffff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        header img {
+            width: 100%;
+            display: block;
+        }
+        .titulo {
+            text-align: center;
+            font-size: 28px;
+            margin-top: 20px;
+            font-weight: bold;
+            color: #a88b58;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Stats Cards */
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 30px 0;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #2f4f2f 0%, #3e7142 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            flex: 1;
+            min-width: 150px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .stat-card h3 {
+            font-size: 14px;
+            margin: 0 0 10px 0;
+            opacity: 0.9;
+        }
+        .stat-card .numero {
+            font-size: 32px;
+            font-weight: bold;
+        }
+        
+        .btn-volver {
+            display: inline-block;
+            padding: 10px 18px;
+            background-color: #2f4f2f;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 15px;
+            transition: background-color 0.3s ease;
+        }
+        .btn-volver:hover {
+            background-color: #3e7142;
+        }
+        
+        /* Tabla */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        th {
+            background-color: #2f4f2f;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+        }
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .estado-vigente {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        .estado-vencido {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .no-permisos {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            margin: 30px 0;
+        }
+        .no-permisos h2 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .btn-descarga {
+            color: #2f4f2f;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .btn-descarga:hover {
+            text-decoration: underline;
+        }
+        
+        footer img {
+            width: 100%;
+            display: block;
+            margin-top: 40px;
+        }
+        
+        @media (max-width: 768px) {
+            .titulo {
+                font-size: 24px;
+            }
+            .stats {
+                flex-direction: column;
+            }
+            table {
+                font-size: 12px;
+            }
+            th, td {
+                padding: 8px 4px;
+            }
+            .hide-mobile {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <img src="{{ url_for('static', filename='logo1.jpg') }}" alt="Logo">
+</header>
+<header>
+    <img src="{{ url_for('static', filename='encabezado2.jpg') }}" alt="Encabezado">
+</header>
+
+<div class="titulo">Secretaría de Movilidad - Morelos</div>
+
+<div class="container">
+    <a href="{{ url_for('registro_usuario') }}" class="btn-volver">← Volver al Registro</a>
+    
+    <h1 style="text-align: center; color: #222; margin: 20px 0;">📋 Mis Permisos Generados</h1>
+    
+    <div class="stats">
+        <div class="stat-card">
+            <h3>FOLIOS ASIGNADOS</h3>
+            <div class="numero">{{ folios_asignados }}</div>
+        </div>
+        <div class="stat-card">
+            <h3>FOLIOS USADOS</h3>
+            <div class="numero">{{ folios_usados }}</div>
+        </div>
+        <div class="stat-card">
+            <h3>TOTAL GENERADOS</h3>
+            <div class="numero">{{ total_generados }}</div>
+        </div>
+        <div class="stat-card">
+            <h3>DISPONIBLES</h3>
+            <div class="numero">{{ folios_asignados - folios_usados }}</div>
+        </div>
+    </div>
+
+    {% if permisos %}
+    <table>
+        <thead>
+            <tr>
+                <th>Folio</th>
+                <th class="hide-mobile">Marca</th>
+                <th>Serie</th>
+                <th>Fecha</th>
+                <th class="hide-mobile">Hora</th>
+                <th>Estado</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in permisos %}
+            <tr>
+                <td><strong>{{ p.folio }}</strong></td>
+                <td class="hide-mobile">{{ p.marca }}</td>
+                <td>{{ p.numero_serie }}</td>
+                <td>{{ p.fecha_formateada }}</td>
+                <td class="hide-mobile">{{ p.hora_formateada }}</td>
+                <td class="{% if p.estado == 'VIGENTE' %}estado-vigente{% else %}estado-vencido{% endif %}">
+                    {{ p.estado }}
+                </td>
+                <td>
+                    <a href="{{ url_for('descargar_pdf', folio=p.folio) }}" class="btn-descarga">
+                        📥 Descargar
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="no-permisos">
+        <h2>😴 No has generado ningún permiso aún</h2>
+        <p>Cuando generes permisos, aparecerán aquí con fecha y hora exacta.</p>
+        <p style="margin-top: 20px;">
+            <a href="{{ url_for('registro_usuario') }}" class="btn-volver">Generar mi primer permiso</a>
+        </p>
+    </div>
+    {% endif %}
+</div>
+
+<footer>
+    <img src="{{ url_for('static', filename='piedepaguinamorelos.jpg') }}" alt="Pie">
+</footer>
+
+</body>
+</html>
