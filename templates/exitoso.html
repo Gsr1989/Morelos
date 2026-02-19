@@ -1,95 +1,147 @@
-<!-- templates/exitoso.html -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Registro Exitoso</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    body {
-      background: #ffffff;
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      text-align: center;
-      color: #000000;
-    }
-    header img, .franja-abajo img, footer img {
-      width: 100%;
-      display: block;
-    }
-    .contenido {
-      max-width: 600px;
-      margin: 40px auto;
-      padding: 30px;
-      border-radius: 10px;
-      background-color: #f9f9f9;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    h1 {
-      color: #2f4f2f;
-      font-size: 24px;
-      margin-bottom: 20px;
-    }
-    .contenido p {
-      font-size: 16px;
-      margin: 8px 0;
-      color: #333;
-    }
-    .btn-verde {
-      display: inline-block;
-      padding: 14px 22px;
-      margin: 12px 8px 0;
-      background-color: #2f4f2f;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      text-decoration: none;
-      font-size: 16px;
-      transition: background-color 0.3s ease;
-    }
-    .btn-verde:hover {
-      background-color: #3e7142;
-    }
-    @media (max-width: 600px) {
-      .contenido {
-        padding: 20px;
-      }
-      .btn-verde {
-        width: 90%;
-        margin-top: 12px;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <title>Permiso Generado - Morelos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            background: #fff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        header img {
+            width: 100%;
+            display: block;
+        }
+        .container {
+            max-width: 600px;
+            margin: 30px auto;
+            padding: 20px;
+            text-align: center;
+        }
+        .icono-exito {
+            font-size: 80px;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+        .titulo {
+            color: #a88b58;
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .folio-card {
+            background: linear-gradient(135deg, #2f4f2f 0%, #3e7142 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .folio-card h2 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .folio-card .numero {
+            font-size: 40px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .info-card {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        .btn {
+            display: inline-block;
+            background: #4CAF50;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            margin: 10px;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .btn:hover {
+            background: #45a049;
+        }
+        .btn-secundario {
+            background: #2f4f2f;
+        }
+        .btn-secundario:hover {
+            background: #3e7142;
+        }
+        footer img {
+            width: 100%;
+            display: block;
+            margin-top: 40px;
+        }
+    </style>
 </head>
 <body>
 
-  <!-- Encabezado Morelos -->
-  <header>
-    <img src="{{ url_for('static', filename='morelos_arriba.jpg') }}" alt="Encabezado">
-  </header>
+<header>
+    <img src="{{ url_for('static', filename='logo1.jpg') }}" alt="Logo">
+</header>
+<header>
+    <img src="{{ url_for('static', filename='encabezado2.jpg') }}" alt="Encabezado">
+</header>
 
-  <div class="contenido">
-    <h1>Registro Exitoso</h1>
-    <p><strong>Folio:</strong> {{ folio }}</p>
-    <p><strong>Número de Serie:</strong> {{ serie }}</p>
-    <p><strong>Fecha de Generación:</strong> {{ fecha_generacion }}</p>
+<div class="container">
+    <div class="icono-exito">✅</div>
+    <div class="titulo">¡Permiso Generado Exitosamente!</div>
+    
+    <div class="folio-card">
+        <h2>🎟️ FOLIO</h2>
+        <div class="numero">{{ folio }}</div>
+    </div>
+    
+    <div class="info-card">
+        <div class="info-row">
+            <strong>Serie:</strong>
+            <span>{{ serie }}</span>
+        </div>
+        <div class="info-row">
+            <strong>Fecha y Hora:</strong>
+            <span>{{ fecha_generacion }}</span>
+        </div>
+        <div class="info-row">
+            <strong>Vigencia:</strong>
+            <span>30 días</span>
+        </div>
+        <div class="info-row">
+            <strong>Tipo:</strong>
+            <span>Permiso de Circulación</span>
+        </div>
+    </div>
+    
+    <a href="{{ url_for('descargar_pdf', folio=folio) }}" class="btn">📥 Descargar PDF</a>
+    <a href="{{ url_for('registro_usuario') if not session.get('admin') else url_for('registro_admin') }}" class="btn btn-secundario">
+        ➕ Generar Otro Permiso
+    </a>
+    <a href="{{ url_for('mis_permisos') if not session.get('admin') else url_for('admin_folios') }}" class="btn btn-secundario">
+        📋 Ver Mis Permisos
+    </a>
+    <a href="{{ url_for('consulta_folio') }}" class="btn btn-secundario">🔍 Consultar Folio</a>
+</div>
 
-    <a href="{{ enlace_pdf }}" class="btn-verde">Descargar PDF</a>
-    <a href="{{ volver_url }}" class="btn-verde">Registrar otro folio</a>
-    <a href="{{ url_for('admin') }}" class="btn-verde">Volver al Panel</a>
-    <a href="{{ url_for('logout') }}" class="btn-verde">Cerrar Sesión</a>
-  </div>
-
-  <!-- Franja inferior Morelos -->
-  <div class="franja-abajo">
-    <img src="{{ url_for('static', filename='morelos_abajo.jpg') }}" alt="Franja">
-  </div>
-
-  <!-- Pie de página Morelos -->
-  <footer>
-    <img src="{{ url_for('static', filename='footer_morelos.jpg') }}" alt="Pie">
-  </footer>
+<footer>
+    <img src="{{ url_for('static', filename='piedepaguinamorelos.jpg') }}" alt="Pie">
+</footer>
 
 </body>
 </html>
