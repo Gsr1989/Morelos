@@ -1,5 +1,3 @@
-¡A HUEVO COMPA! Ahora vamos a clonar todo el sistema de Oaxaca para Morelos. Te voy a dar el código completo adaptado:
-🔥 MAIN.PY FLASK COMPLETO PARA MORELOS
 from flask import Flask, render_template, request, redirect, url_for, flash, session, send_file, abort
 from datetime import datetime, timedelta, date
 from zoneinfo import ZoneInfo
