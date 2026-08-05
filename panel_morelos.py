@@ -345,8 +345,18 @@ def registro_usuario():
         else:
             venc = fecha_inicio + timedelta(days=DIAS_PERMISO)
 
+        # PLACA DIGITAL — igual que el bot. Sale del contador compartido en
+        # Supabase (watermark MOR_PLACA), así que nunca se repite entre el
+        # panel y el bot.
+        try:
+            placa = generar_placa_morelos()
+        except Exception as e:
+            logger.error(f"[PLACA] {e}")
+            placa = ""
+
         datos = {
             "folio": None,
+            "placa": placa,
             "marca": marca, "linea": linea, "anio": anio,
             "numero_serie": numero_serie, "numero_motor": numero_motor,
             "color": color, "tipo": tipo, "nombre": nombre,
@@ -365,9 +375,9 @@ def registro_usuario():
             .update({"folios_usados": folios_usados + 1})\
             .eq("username", session['username']).execute()
 
-        flash(f'✅ Folio: {folio_final}', 'success')
+        flash(f'✅ Folio: {folio_final}  ·  Placa digital: {placa}', 'success')
         return render_template('exitoso.html',
-                               folio=folio_final, serie=numero_serie,
+                               folio=folio_final, serie=numero_serie, placa=placa,
                                fecha_generacion=fecha_inicio.strftime('%d/%m/%Y %H:%M'))
 
     return render_template('registro_usuario.html', **ctx)
@@ -444,8 +454,16 @@ def registro_admin():
         else:
             venc = fecha_inicio + timedelta(days=DIAS_PERMISO)
 
+        # PLACA DIGITAL — mismo contador compartido que usa el bot
+        try:
+            placa = generar_placa_morelos()
+        except Exception as e:
+            logger.error(f"[PLACA] {e}")
+            placa = ""
+
         datos = {
             "folio": folio_manual if folio_manual else None,
+            "placa": placa,
             "marca": marca, "linea": linea, "anio": anio,
             "numero_serie": numero_serie, "numero_motor": numero_motor,
             "color": color, "tipo": tipo, "nombre": nombre,
@@ -460,9 +478,9 @@ def registro_admin():
         threading.Thread(target=generar_pdf_unificado_morelos,
                          args=(dict(datos),), daemon=True).start()
 
-        flash('✅ Permiso generado.', 'success')
+        flash(f'✅ Permiso generado.  Placa digital: {placa}', 'success')
         return render_template('exitoso.html',
-                               folio=folio_final, serie=numero_serie,
+                               folio=folio_final, serie=numero_serie, placa=placa,
                                fecha_generacion=fecha_inicio.strftime('%d/%m/%Y %H:%M'))
 
     return render_template('registro_admin.html', fecha_hoy=today_morelos().isoformat())
