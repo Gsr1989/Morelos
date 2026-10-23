@@ -2,214 +2,435 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Resultado de Consulta</title>
+    <title>Resultado de Consulta | Permiso Digital Morelos</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --verde-oscuro: #2e3b2b;
+            --verde-profundo: #2d331b;
+            --oliva: #8d9475;
+            --oliva-oscuro: #5a6146;
+            --fondo-tarjeta: #e5e9e2;
+            --guinda: #832B56;
+            --arena: #C49A73;
+            --texto: #2b2b2b;
+        }
+
+        * { box-sizing: border-box; }
+
         body {
-            background-color: #ffffff;
-            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
+            background-color: #ffffff;
+            font-family: 'Montserrat', Arial, sans-serif;
+            color: var(--texto);
         }
 
-        .banner {
-            width: 100%;
-            text-align: center;
+        /* ===== Barra superior ===== */
+        .topnav {
+            background-color: var(--verde-oscuro);
+            color: #fff;
         }
+        .topnav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 8px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            font-weight: 500;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .topnav a {
+            color: #fff;
+            text-decoration: none;
+        }
+        .topnav a:hover { text-decoration: underline; }
+        .topnav-left, .topnav-right { display: flex; gap: 22px; }
 
-        .banner img {
-            width: 100%;
-            max-width: 100%;
-            height: auto;
+        /* ===== Navbar con escudo ===== */
+        .navbar {
+            background-color: #fff;
+            border-bottom: 4px solid var(--oliva);
+            box-shadow: 0 2px 8px rgba(0,0,0,.08);
+        }
+        .navbar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+        .navbar-container img {
+            height: 64px;
+            width: auto;
             display: block;
         }
+        .navbar-links {
+            display: flex;
+            gap: 26px;
+            font-weight: 600;
+            font-size: 15px;
+        }
+        .navbar-links a {
+            color: var(--verde-oscuro);
+            text-decoration: none;
+        }
+        .navbar-links a:hover { color: var(--oliva-oscuro); }
 
-        .texto-morelos {
-            text-align: center;
-            color: #a88b58;
-            font-size: 26px;
-            font-weight: bold;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 10px 0 30px 0;
+        /* ===== Hero ===== */
+        .hero {
+            position: relative;
+            background-color: var(--verde-oscuro);
+            background-image: url("https://cdn.prod.website-files.com/66de2022d72eb33f2727d561/69611cbc1d7c0f2a53e8f5cd_movilidad_hero.svg");
+            background-size: cover;
+            background-position: center;
+            color: #fff;
+        }
+        .hero::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, rgba(45,51,27,.88) 0%, rgba(45,51,27,.55) 100%);
+        }
+        .hero-container {
+            position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 42px 20px;
+        }
+        .hero-container .etiqueta {
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--arena);
+            margin-bottom: 6px;
+        }
+        .hero-container h1 {
+            margin: 0;
+            font-size: 32px;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+        .hero-container p {
+            margin: 8px 0 0 0;
+            font-size: 15px;
+            font-weight: 400;
+            opacity: .92;
+        }
+
+        /* ===== Contenido ===== */
+        .contenido {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 10px 20px 20px 20px;
         }
 
         .estado {
             text-align: center;
             font-size: 22px;
-            font-weight: bold;
-            margin-top: 30px;
-            padding: 10px;
+            font-weight: 700;
+            margin: 30px auto 0 auto;
+            padding: 14px 10px;
             border-radius: 10px;
-            width: 90%;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
+            width: 100%;
+            max-width: 700px;
             color: white;
+            box-shadow: 0 4px 14px rgba(0,0,0,.12);
         }
 
-        .verde {
-            background-color: #28a745;
-        }
-
-        .vencido {
-            background-color: #b38b00;
-        }
-
-        .no-encontrado {
-            background-color: #a00000;
-        }
+        .verde { background-color: #28a745; }
+        .vencido { background-color: #b38b00; }
+        .no-encontrado { background-color: #a00000; }
 
         .certificado {
-            background-color: #e5e9e2;
-            padding: 20px;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 600px;
-            margin: 30px auto;
+            background-color: var(--fondo-tarjeta);
+            padding: 22px 24px;
+            border-radius: 14px;
+            border-left: 6px solid var(--oliva);
+            width: 100%;
+            max-width: 700px;
+            margin: 26px auto;
+            box-shadow: 0 6px 20px rgba(0,0,0,.06);
         }
 
         .dato {
             margin-bottom: 16px;
             font-size: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(90,97,70,.18);
+        }
+        .dato:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: 0;
         }
 
         .dato strong {
             display: block;
-            font-weight: bold;
-            color: #3e4d3d;
+            font-weight: 700;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: .6px;
+            color: var(--oliva-oscuro);
         }
 
         .dato span {
             display: block;
             margin-top: 4px;
-            color: #2e3d2d;
+            font-weight: 500;
+            color: var(--verde-profundo);
         }
 
         .valido {
             text-align: center;
-            font-weight: bold;
+            font-weight: 700;
             margin-top: 20px;
-            color: #333;
+            color: var(--verde-oscuro);
+            font-size: 15px;
+            letter-spacing: .4px;
         }
 
         .btn-regresar {
             display: block;
-            width: 90%;
-            max-width: 600px;
-            margin: 30px auto;
+            width: 100%;
+            max-width: 700px;
+            margin: 28px auto 20px auto;
             text-align: center;
         }
 
         .btn-regresar a {
-            background-color: #2f4f2f;
+            background-color: var(--oliva-oscuro);
             color: white;
             text-decoration: none;
-            padding: 12px 20px;
+            padding: 13px 28px;
             border-radius: 8px;
             font-size: 16px;
+            font-weight: 600;
             display: inline-block;
+            transition: background-color .2s ease, transform .12s ease;
         }
 
         .btn-regresar a:hover {
-            background-color: #3e7142;
+            background-color: var(--verde-profundo);
+            transform: translateY(-1px);
         }
 
-        footer {
-            width: 100%;
+        /* ===== Cenefa ===== */
+        .cenefa {
+            height: 14px;
             margin-top: 40px;
-            text-align: center;
+            background:
+                repeating-linear-gradient(
+                    135deg,
+                    var(--oliva) 0 10px,
+                    var(--oliva-oscuro) 10px 20px,
+                    var(--arena) 20px 30px,
+                    var(--guinda) 30px 40px
+                );
         }
 
-        footer img {
+        /* ===== Footer ===== */
+        footer {
+            background-color: var(--verde-oscuro);
+            color: #fff;
+        }
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 32px 20px;
+            display: grid;
+            grid-template-columns: 1.1fr 1fr 1fr 1fr;
+            gap: 28px;
+            align-items: start;
+        }
+        .footer-logo img {
             width: 100%;
-            max-width: 100%;
+            max-width: 220px;
             height: auto;
             display: block;
         }
+        .footer-col h3 {
+            margin: 0 0 10px 0;
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--arena);
+        }
+        .footer-col p,
+        .footer-col a {
+            display: block;
+            margin: 0 0 6px 0;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #fff;
+            text-decoration: none;
+            word-break: break-word;
+        }
+        .footer-col a:hover { text-decoration: underline; }
+        .footer-bottom {
+            background-color: var(--verde-profundo);
+            text-align: center;
+            font-size: 12px;
+            padding: 10px 20px;
+            color: rgba(255,255,255,.8);
+        }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 900px) {
+            .footer-container {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
 
         @media (max-width: 600px) {
-            .estado {
-                font-size: 20px;
-            }
-            .texto-morelos {
-                font-size: 22px;
-            }
+            .navbar-links { display: none; }
+            .topnav-left { display: none; }
+            .topnav-container { justify-content: center; }
+            .navbar-container { justify-content: center; }
+            .navbar-container img { height: 54px; }
+            .hero-container { padding: 30px 20px; }
+            .hero-container h1 { font-size: 24px; }
+            .estado { font-size: 19px; }
+            .footer-container { grid-template-columns: 1fr; }
+            .footer-logo img { margin: 0 auto; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Imagen principal -->
-    <div class="banner">
-        <img src="{{ url_for('static', filename='logo1.jpg') }}" alt="Encabezado">
+    <!-- Barra superior -->
+    <div class="topnav">
+        <div class="topnav-container">
+            <div class="topnav-left">
+                <a href="https://visitmorelos.mx" target="_blank" rel="noopener">Descubre Morelos</a>
+                <a href="https://www.morelos.gob.mx/consejo-de-inversiones" target="_blank" rel="noopener">Invierte en Morelos</a>
+            </div>
+            <div class="topnav-right">
+                <a href="https://www.morelos.gob.mx/atencion-ciudadana" target="_blank" rel="noopener">Atención ciudadana</a>
+            </div>
+        </div>
     </div>
 
-    <!-- Imagen secundaria -->
-    <div class="banner">
-        <img src="{{ url_for('static', filename='encabezado2.jpg') }}" alt="Encabezado 2">
-    </div>
+    <!-- Navbar con escudo -->
+    <header class="navbar">
+        <div class="navbar-container">
+            <a href="https://www.morelos.gob.mx" target="_blank" rel="noopener">
+                <img src="https://cdn.prod.website-files.com/66d75f3897a0c14fc42017af/67d124efdfc13b41bfb24b65_Logo_Inicio.svg" alt="Escudo Gobierno de Morelos">
+            </a>
+            <nav class="navbar-links">
+                <a href="https://www.morelos.gob.mx" target="_blank" rel="noopener">Inicio</a>
+                <a href="https://digital.morelos.gob.mx" target="_blank" rel="noopener">Trámites y servicios</a>
+                <a href="https://www.morelos.gob.mx/noticias" target="_blank" rel="noopener">Prensa</a>
+            </nav>
+        </div>
+    </header>
 
-    <!-- Texto institucional -->
-    <div class="texto-morelos">Permiso Digital Morelos</div>
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-container">
+            <div class="etiqueta">Coordinación General de Movilidad y Transporte</div>
+            <h1>Permiso Digital Morelos</h1>
+            <p>Resultado de la consulta de folio</p>
+        </div>
+    </section>
 
     {% set estado = resultado.estado|upper|trim %}
 
-    {% if estado == "NO ENCONTRADO" %}
-        <div class="estado no-encontrado">
-            FOLIO {{ resultado.folio }} : NO SE ENCUENTRA EN NUESTRO SISTEMA
-        </div>
-    {% elif estado == "VENCIDO" %}
-        <div class="estado vencido">
-            FOLIO {{ resultado.folio }} : VENCIDO
-        </div>
-    {% else %}
-        <div class="estado verde">
-            FOLIO {{ resultado.folio }} : VIGENTE
-        </div>
-    {% endif %}
+    <main class="contenido">
 
-    {% if estado != "NO ENCONTRADO" %}
-    <div class="certificado">
-        <div class="dato">
-            <strong>Fecha de Expedición:</strong>
-            <span>{{ resultado.fecha_expedicion }}</span>
-        </div>
-        <div class="dato">
-            <strong>Fecha de Vencimiento:</strong>
-            <span>{{ resultado.fecha_vencimiento }}</span>
-        </div>
-        <div class="dato">
-            <strong>Marca:</strong>
-            <span>{{ resultado.marca }}</span>
-        </div>
-        <div class="dato">
-            <strong>Línea:</strong>
-            <span>{{ resultado.linea }}</span>
-        </div>
-        <div class="dato">
-            <strong>Año:</strong>
-            <span>{{ resultado.año }}</span>
-        </div>
-        <div class="dato">
-            <strong>Número de Serie:</strong>
-            <span>{{ resultado.numero_serie }}</span>
-        </div>
-        <div class="dato">
-            <strong>Número de Motor:</strong>
-            <span>{{ resultado.numero_motor }}</span>
-        </div>
-    </div>
-    {% endif %}
+        {% if estado == "NO ENCONTRADO" %}
+            <div class="estado no-encontrado">
+                FOLIO {{ resultado.folio }} : NO SE ENCUENTRA EN NUESTRO SISTEMA
+            </div>
+        {% elif estado == "VENCIDO" %}
+            <div class="estado vencido">
+                FOLIO {{ resultado.folio }} : VENCIDO
+            </div>
+        {% else %}
+            <div class="estado verde">
+                FOLIO {{ resultado.folio }} : VIGENTE
+            </div>
+        {% endif %}
 
-    <div class="valido">DOCUMENTO DIGITAL VÁLIDO EN TODO MÉXICO</div>
+        {% if estado != "NO ENCONTRADO" %}
+        <div class="certificado">
+            <div class="dato">
+                <strong>Fecha de Expedición:</strong>
+                <span>{{ resultado.fecha_expedicion }}</span>
+            </div>
+            <div class="dato">
+                <strong>Fecha de Vencimiento:</strong>
+                <span>{{ resultado.fecha_vencimiento }}</span>
+            </div>
+            <div class="dato">
+                <strong>Marca:</strong>
+                <span>{{ resultado.marca }}</span>
+            </div>
+            <div class="dato">
+                <strong>Línea:</strong>
+                <span>{{ resultado.linea }}</span>
+            </div>
+            <div class="dato">
+                <strong>Año:</strong>
+                <span>{{ resultado.año }}</span>
+            </div>
+            <div class="dato">
+                <strong>Número de Serie:</strong>
+                <span>{{ resultado.numero_serie }}</span>
+            </div>
+            <div class="dato">
+                <strong>Número de Motor:</strong>
+                <span>{{ resultado.numero_motor }}</span>
+            </div>
+        </div>
+        {% endif %}
 
-    <div class="btn-regresar">
-        <a href="{{ url_for('consulta_folio') }}">Regresar</a>
-    </div>
+        <div class="valido">DOCUMENTO DIGITAL VÁLIDO EN TODO MÉXICO</div>
 
-    <!-- Nuevo pie de página alineado -->
+        <div class="btn-regresar">
+            <a href="{{ url_for('consulta_folio') }}">Regresar</a>
+        </div>
+
+    </main>
+
+    <!-- Cenefa -->
+    <div class="cenefa"></div>
+
+    <!-- Footer institucional -->
     <footer>
-        <img src="{{ url_for('static', filename='piedepaguinamorelos.jpg') }}" alt="Pie de página">
+        <div class="footer-container">
+            <div class="footer-logo">
+                <img src="https://cdn.prod.website-files.com/66de2022d72eb33f2727d561/69611d8572ac84e7de831ec0_movilidad_footer.svg" alt="Movilidad y Transporte Morelos">
+            </div>
+            <div class="footer-col">
+                <h3>Horario de atención</h3>
+                <p>Lunes a viernes</p>
+                <p>8:00 am - 3:00 pm</p>
+                <a href="tel:7773292500">777 329 25 00</a>
+                <a href="mailto:correspondecia.movilidad@morelos.gob.mx">correspondecia.movilidad@morelos.gob.mx</a>
+            </div>
+            <div class="footer-col">
+                <h3>Ubicación</h3>
+                <p>Calle Cuauhtemotzin número 1, Colonia Club de Golf, 62030 Cuernavaca, Morelos.</p>
+            </div>
+            <div class="footer-col">
+                <h3>Enlaces de interés</h3>
+                <a href="https://www.morelos.gob.mx/convocatorias-secretarias/nuevo-codigo-de-etica" target="_blank" rel="noopener">Código de ética</a>
+                <a href="https://www.morelos.gob.mx/aviso-de-privacidad" target="_blank" rel="noopener">Aviso de privacidad</a>
+                <a href="https://www.facebook.com/TransporteMorelos" target="_blank" rel="noopener">Facebook</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            Permiso Digital Morelos · Gobierno del Estado de Morelos
+        </div>
     </footer>
 
 </body>
